@@ -63,7 +63,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
 
     val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, proto.mass, eqRadius, proto.axis, density, proto.isGasGiant)
     val lengthOfOrbit = eCalc.orbitLength(proto.axis, proto.mass, star.mass)
-    val (synch, resonant, dayLen) = eCalc.dayLength(angularVelocity, lengthOfOrbit, proto.ecc)
+    val (_, _, dayLen) = eCalc.dayLength(angularVelocity, lengthOfOrbit, proto.ecc)
 
     val gravity = eCalc.surfaceGravity(proto.mass, eqRadius)
     val escapeVel = eCalc.escapeVelocity(UnitConverter.mToKm(gravity), eqRadius)

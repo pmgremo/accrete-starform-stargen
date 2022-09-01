@@ -1,6 +1,7 @@
 package com.szadowsz.starform.system.bodies
 
 import java.text.DecimalFormat
+import scala.collection.mutable
 
 /**
   * Outline of an accreting proto-planetary body. Defines the basic members required for the aggregation part of simulation.
@@ -69,6 +70,8 @@ trait Planetismal {
     }
   }
 
+  override def hashCode(): Int = super.hashCode()
+
   /**
     * Method to supply String representation of the proto planet.
     *
@@ -76,7 +79,7 @@ trait Planetismal {
     */
   override def toString: String = {
     var df: DecimalFormat = new DecimalFormat("#.00000")
-    val build: StringBuilder = new StringBuilder("[axis: ")
+    val build: mutable.StringBuilder = new mutable.StringBuilder("[axis: ")
     build.append(df.format(axis) + " AU eccentricity: ")
     build.append(df.format(ecc) + " mass: ")
     df = new DecimalFormat("#.00000E00")

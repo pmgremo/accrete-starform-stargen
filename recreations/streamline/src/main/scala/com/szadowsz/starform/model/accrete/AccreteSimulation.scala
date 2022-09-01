@@ -192,7 +192,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     */
   final protected def splitForSubPlanet(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
     val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
-    val middle: DustBand = DustBand(proto.innerBandLimit, proto.outerBandLimit, false, band.hasGas && hasGas)
+    val middle: DustBand = DustBand(proto.innerBandLimit, proto.outerBandLimit, hasDust = false, hasGas = band.hasGas && hasGas)
     val right: DustBand = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
     List(left, middle, right)
   }
@@ -216,7 +216,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     */
   final protected def splitOnPlanetMaxEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
     val right = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
-    val left = DustBand(band.innerEdge, proto.outerBandLimit, false, hasGas)
+    val left = DustBand(band.innerEdge, proto.outerBandLimit, hasDust = false, hasGas = hasGas)
     List(left, right)
   }
 
@@ -238,7 +238,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return the split bands
     */
   final protected def splitOnPlanetMinEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
-    val right = DustBand(proto.innerBandLimit, band.outerEdge, false, band.hasGas && hasGas)
+    val right = DustBand(proto.innerBandLimit, band.outerEdge, hasDust = false, hasGas = band.hasGas && hasGas)
     val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
     List(left, right)
   }
@@ -271,7 +271,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       splitOnPlanetMinEdge(proto, band, retainGas)
 
     } else if (band.innerEdge >= proto.innerBandLimit && band.outerEdge <= proto.outerBandLimit) {
-      List(DustBand(band.innerEdge, band.outerEdge, false, if (band.hasGas) retainGas else false))
+      List(DustBand(band.innerEdge, band.outerEdge, hasDust = false, hasGas = if (band.hasGas) retainGas else false))
     } else {
       List(band)
     }

@@ -1,6 +1,7 @@
 package com.szadowsz.starform.system.bodies
 
 import java.text.DecimalFormat
+import scala.collection.mutable
 
 /**
   * Class to represent a band of dust of gas. Contains the inner and outer edge, and whether it has dust or
@@ -48,7 +49,7 @@ case class DustBand(innerEdge: Double, outerEdge: Double, hasDust: Boolean = tru
     */
   override def toString: String = {
     val df: DecimalFormat = new DecimalFormat("#.00000")
-    val build: StringBuilder = new StringBuilder("[band: ")
+    val build: mutable.StringBuilder = new mutable.StringBuilder("[band: ")
     build.append(df.format(innerEdge) + " - ")
     build.append(df.format(outerEdge) + "AU ")
     build.append(" dust: " + (if (hasDust) "Y" else "N"))

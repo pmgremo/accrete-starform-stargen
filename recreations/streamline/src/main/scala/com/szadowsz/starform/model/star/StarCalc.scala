@@ -107,7 +107,7 @@ class StarCalc extends StarConstants {
   def spectralClass(rand: RandGenTrait): (Char, Int, Double) = {
     val rnd = rand.nextDouble()
     val (specs, mag) = cumulStarCounts.find { case (s, _) => s.exists { case (prob, spec) => prob >= rnd } }.get
-    val (_, spec) = specs.find { case (prob, spec) => prob >= rnd }.get
+    val (_, spec) = specs.find { case (prob, _) => prob >= rnd }.get
 
     val spcClass = spectralClasses(spec)
     val rnd2 = rand.nextDouble()

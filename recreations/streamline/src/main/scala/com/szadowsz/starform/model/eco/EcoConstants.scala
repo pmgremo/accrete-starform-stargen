@@ -112,11 +112,11 @@ trait EcoConstants {
 
   def EARTH_ALBEDO: Double = 0.3
 
-  def ATMOSPHERE_II_V_ALBEDO = 0.7
+  def ATMOSPHERE_II_V_ALBEDO: Double = 0.7
 
-  def ATMOSPHERE_III_ALBEDO = 0.2
+  def ATMOSPHERE_III_ALBEDO: Double = 0.2
 
-  def ATMOSPHERE_VII_ALBEDO = AIRLESS_ICE_ALBEDO
+  def ATMOSPHERE_VII_ALBEDO: Double = AIRLESS_ICE_ALBEDO
 
   def CLOUD_ALBEDO: Double = 0.52
 
@@ -126,8 +126,8 @@ trait EcoConstants {
 
   def ICE_ALBEDO: Double = 0.7
 
-  def Q1 = 1.258E19
+  def Q1: Double = 1.258E19
 
-  def Q2 = 0.0698
+  def Q2: Double = 0.0698
 
 }
