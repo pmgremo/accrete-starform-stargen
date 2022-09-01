@@ -3,19 +3,21 @@ package com.szadowsz.starform.model.burdick
 import com.szadowsz.starform.model.eco.calc.BurdickEcoCalc
 import com.szadowsz.starform.model.star.calc.FoggStarCalc
 import com.szadowsz.starform.model.star.constants.FoggStarConstants
+import com.szadowsz.starform.system.bodies.star.FoggStar
 import com.szadowsz.starform.unit.UnitConverter
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Created on 15/04/2017.
   */
-class BurdickSampleSystemSpec extends FunSpec with Matchers {
+class BurdickSampleSystemSpec extends AnyFunSpec with Matchers {
 
   val tolerancePercentage = 0.05 // 5% of the expected value for tolerance. To account for floating point calculations on modern systems.
 
   val eCalc = new BurdickEcoCalc()
 
-  val star = BurdickTestStar(FoggStarCalc(new FoggStarConstants))
+  val star: BurdickTestStar[FoggStar] = BurdickTestStar(FoggStarCalc(new FoggStarConstants))
 
 
   describe("Sample System Planet 1 Calculations") {

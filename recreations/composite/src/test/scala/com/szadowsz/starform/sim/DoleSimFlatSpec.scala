@@ -1,15 +1,13 @@
 package com.szadowsz.starform.sim
 
-import java.util.Random
-
-import com.szadowsz.starform.model.accrete.calc.insert.RandInsertStrat
 import com.szadowsz.starform.profile.accrete.DoleProfile
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * 03/10/2016.
   */
-class DoleSimFlatSpec extends FlatSpec with Matchers {
+class DoleSimFlatSpec extends AnyFlatSpec with Matchers {
 
   behavior of "The Dole Implementation of Accrete Simulation"
 

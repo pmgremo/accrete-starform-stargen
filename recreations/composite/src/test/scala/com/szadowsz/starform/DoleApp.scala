@@ -13,7 +13,7 @@ object DoleApp {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     val acrete = DoleSimulation(new DoleProfile)
     val system = acrete.generateSystem()
     system.planets.zipWithIndex.foreach{case (pl,i) => logger.info("Planet {}: {}", i, pl)}

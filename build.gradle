@@ -1,16 +1,7 @@
-allprojects {
-    // IntelliJ is the primary development medium, so it makes sense to add explicit support for it in gradle
-    apply plugin: 'idea'
-
-    // Equivalent to groupid and version in maven, artifactid equivalent is set in settings.gradle.
-    group 'com.szadowsz'
-    version '0.0.1'
+plugins {
+    id 'c'
+    id 'idea'
 }
-
-apply plugin: 'visual-studio'
-
-// Add necessary language support
-apply plugin: 'c'
 
 model {
     toolChains {
@@ -25,24 +16,20 @@ model {
     }
     components {
         accrete(NativeExecutableSpec) {
-            sources {
-                c {
-                    source {
-                        srcDir "src/main/c"
-                        include "**/*.c"
-                    }
-                    exportedHeaders {
-                        srcDir "src/main/headers"
-                    }
+            sources.c {
+                source {
+                    srcDir "src/main/c"
+                    include "**/*.c"
+                }
+                exportedHeaders {
+                    srcDir "src/main/headers"
                 }
             }
+            binaries.all {
+                print toolChains
+                cCompiler.args "-Wno-multichar", "-Wno-error=format-security", "-Wno-format-overflow"
+                cppCompiler.args "-Wno-multichar", "-Wno-error=format-security", "-Wno-format-overflow"
+            }
         }
-    }
-}
-
-idea {
-    project {
-        languageLevel = '1.8'
-        vcs = 'Git'
     }
 }

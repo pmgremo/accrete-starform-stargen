@@ -3,9 +3,8 @@ package com.szadowsz.starform.model.dole
 import com.szadowsz.starform.model.accrete.calc.AccreteCalc
 import com.szadowsz.starform.model.accrete.calc.planet.PlanetesimalCalc
 import com.szadowsz.starform.model.accrete.constants.{AccreteConstants, DoleConstants}
-import com.szadowsz.starform.profile.accrete.DoleProfile
-import com.szadowsz.starform.sim.DoleSimulation
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Tests to make sure that a (1.0,1.0) Star in Fogg's equations is functionally equivalent to Dole's equations, so that we may collapse the two variations
@@ -13,13 +12,13 @@ import org.scalatest.{FlatSpec, Matchers}
   *
   * Created on 09/08/2017.
   */
-class DoleCalcSpec extends FlatSpec with Matchers {
+class DoleCalcSpec extends AnyFlatSpec with Matchers {
 
-  val aConst : AccreteConstants = new DoleConstants
+  val aConst: AccreteConstants = new DoleConstants
 
-  val pCalc : PlanetesimalCalc = PlanetesimalCalc(aConst)
+  val pCalc: PlanetesimalCalc = PlanetesimalCalc(aConst)
 
-  val acrete = AccreteCalc(pCalc,aConst)
+  val acrete: AccreteCalc = AccreteCalc(pCalc, aConst)
 
 
   /**
@@ -27,7 +26,6 @@ class DoleCalcSpec extends FlatSpec with Matchers {
     * "Formation of Planetary Systems by Aggregation: A Computer Simulation".
     *
     * @note formula is updated for Starform in [[AccreteCalc]]
-    *
     * @see p. 14, Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method DustDensity, line 96 in DoleParams.java - Ian Burrell (accrete)
     * @see method distribute_planetary_masses, line 417 in accrete.c - Mat Burdick (accrete)
@@ -37,7 +35,6 @@ class DoleCalcSpec extends FlatSpec with Matchers {
     * @see method dist_planetary_masses, line 449 in accrete.c - Keris (starform)
     * @see method dist_planetary_masses, line 419 in accrete.c - Mat Burdick (starform)
     * @see method dist_planetary_masses, line 154 in  Star.java - Carl Burke (starform)
-    *
     * @param radius - the current distance from the stellar mass in AU
     * @return Dust density at that radius of the cloud
     */
@@ -50,7 +47,6 @@ class DoleCalcSpec extends FlatSpec with Matchers {
     *
     * @note formula is updated for Starform in [[PlanetesimalCalc]]
     * @note unit of return value is solar mass.
-    *
     * @see bottom of p. 21, Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see figure (7), p. 503, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method CriticalMass, line 29 in DoleParams.java - Ian Burrell (accrete)
@@ -61,7 +57,6 @@ class DoleCalcSpec extends FlatSpec with Matchers {
     * @see method critical_limit, line 283 in accrete.c - Keris (starform)
     * @see method critical_limit, line 256 in accrete.c - Mat Burdick (starform)
     * @see method critical_limit, line 243 in  Star.java - Carl Burke (starform)
-    *
     * @param perihelion closest the planetesimal gets to the sun in AU.
     * @return critical mass in solar mass.
     */
@@ -71,10 +66,10 @@ class DoleCalcSpec extends FlatSpec with Matchers {
   behavior of "No Star vs Earth Star"
 
   it should "have the same Dust Density" in {
-    acrete.dustDensity(1.0,1.0) should be (dustDensity(1.0))
+    acrete.dustDensity(1.0, 1.0) should be(dustDensity(1.0))
   }
 
   it should "have the same Critical Mass" in {
-    pCalc.criticalMass(1.0,1.0) should be (criticalMass(1.0))
+    pCalc.criticalMass(1.0, 1.0) should be(criticalMass(1.0))
   }
 }

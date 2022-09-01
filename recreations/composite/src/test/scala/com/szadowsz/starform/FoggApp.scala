@@ -13,9 +13,9 @@ object FoggApp {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     val starform = FoggSimulation(new FoggProfile())
     val system = starform.generateSystem(Some(1))
-    system.planets.zipWithIndex.foreach{case (pl,i) => logger.info("Planet {}: {}", i, pl)}
+    system.planets.zipWithIndex.foreach { case (pl, i) => logger.info("Planet {}: {}", i, pl) }
   }
 }

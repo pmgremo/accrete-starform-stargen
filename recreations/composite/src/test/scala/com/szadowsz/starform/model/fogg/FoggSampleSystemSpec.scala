@@ -3,20 +3,22 @@ package com.szadowsz.starform.model.fogg
 import com.szadowsz.starform.model.eco.calc.FoggEcoCalc
 import com.szadowsz.starform.model.star.calc.FoggStarCalc
 import com.szadowsz.starform.model.star.constants.FoggStarConstants
+import com.szadowsz.starform.system.bodies.star.FoggStar
 import com.szadowsz.starform.unit.UnitConverter
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Test the Recreated Fogg Calculations Against Data provided by Fogg with tolerance for more accurate values and floating point changes.
   *
   * Created on 21/09/2016.
   */
-class FoggSampleSystemSpec extends FunSpec with Matchers {
+class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
   val tolerancePercentage = 0.05 // 5% of the expected value for tolerance. To account for floating point calculations on modern systems.
 
   val eCalc = new FoggEcoCalc()
   
-  val star = FoggTestStar(FoggStarCalc(new FoggStarConstants))
+  val star: FoggTestStar[FoggStar] = FoggTestStar(FoggStarCalc(new FoggStarConstants))
   
   describe("Sample System Planet 1 Calculations") {
     val isGasGiant = false

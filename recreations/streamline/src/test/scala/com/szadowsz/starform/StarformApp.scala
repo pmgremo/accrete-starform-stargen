@@ -12,9 +12,9 @@ object StarformApp {
 
   private val logger: Logger = LoggerFactory.getLogger(getClass)
 
-  def main(args: Array[String]) {
-    val starform = new StarformSimulation(SimConstants(None,None,None,None,None))
+  def main(args: Array[String]): Unit = {
+    val starform = new StarformSimulation(SimConstants(None, None, None, None, None))
     val system = starform.generateSystem(Some(1))
-    system.planets.zipWithIndex.foreach{case (pl,i) => logger.info("Planet {}: {}", i, pl)}
+    system.planets.zipWithIndex.foreach { case (pl, i) => logger.info("Planet {}: {}", i, pl) }
   }
 }

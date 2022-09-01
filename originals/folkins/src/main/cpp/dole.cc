@@ -120,7 +120,6 @@ static int debug = DEBUG;
 #include <cstdio>
 #include <cstdlib>
 
-#include "rand.h"
 #include "system.h"
 #include "const.h"
 

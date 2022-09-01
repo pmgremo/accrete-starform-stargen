@@ -72,9 +72,7 @@
 #define XSTR_IOSTREAM
 #define LEXER_IOSTREAM
 
-#include <xstring.h>
-#include <xstrvec.h>
-#include <xfsplit.h>
+#include <string.h>
 
 #include "parsefrm.h"
 

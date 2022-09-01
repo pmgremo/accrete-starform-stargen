@@ -1,12 +1,13 @@
 package com.szadowsz.starform.sim
 
-import com.szadowsz.starform.profile.starform.{FoggProfile, FolkinsProfile}
-import org.scalatest.{FlatSpec, Matchers}
+import com.szadowsz.starform.profile.starform.FolkinsProfile
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * 03/10/2016.
   */
-class FolkinsSimFlatSpec extends FlatSpec with Matchers {
+class FolkinsSimFlatSpec extends AnyFlatSpec with Matchers {
 
   behavior of "The Folkins Implementation of Accrete Simulation"
 

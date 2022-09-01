@@ -1,11 +1,12 @@
 package com.szadowsz.starform.rand
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * 03/10/2016.
   */
-class RandFunSpec extends FunSpec with Matchers {
+class RandFunSpec extends AnyFunSpec with Matchers {
 
    describe("A JDKRandGen Instance") {
 

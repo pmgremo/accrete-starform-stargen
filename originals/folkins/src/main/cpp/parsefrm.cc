@@ -91,11 +91,6 @@
 #define XSTR_IOSTREAM
 #define LEXER_IOSTREAM
 
-#include <xstring.h>
-#include <xstrvec.h>
-#include <xfsplit.h>
-#include <lexer.h>
-
 #include "parsefrm.h"
 
 #define arraysize(x) (sizeof(x)/sizeof(x[0]))

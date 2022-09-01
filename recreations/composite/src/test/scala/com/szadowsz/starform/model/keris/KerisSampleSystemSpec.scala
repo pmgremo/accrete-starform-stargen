@@ -3,20 +3,22 @@ package com.szadowsz.starform.model.keris
 import com.szadowsz.starform.model.eco.calc.{FoggEcoCalc, KerisEcoCalc}
 import com.szadowsz.starform.model.star.calc.FoggStarCalc
 import com.szadowsz.starform.model.star.constants.FoggStarConstants
+import com.szadowsz.starform.system.bodies.star.FoggStar
 import com.szadowsz.starform.unit.UnitConverter
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Test the Recreated Fogg Calculations Against Data provided by Fogg with tolerance for more accurate values and floating point changes.
   *
   * Created on 21/09/2016.
   */
-class KerisSampleSystemSpec extends FunSpec with Matchers {
+class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
   val tolerancePercentage = 0.05 // 5% of the expected value for tolerance. To account for floating point calculations on modern systems.
 
   val eCalc = new KerisEcoCalc()
 
-  val star = KerisTestStar(FoggStarCalc(new FoggStarConstants))
+  val star: FoggStar = KerisTestStar(FoggStarCalc(new FoggStarConstants))
 
   describe("Sample System Planet 1 Calculations") {
     val isGasGiant = false

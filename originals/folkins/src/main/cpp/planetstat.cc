@@ -12,6 +12,8 @@
 #include "const.h"
 
 #include "parsefrm.h"
+#include <map>
+
 
 double  k = 5.67E-8;   /* J / mol K */
 

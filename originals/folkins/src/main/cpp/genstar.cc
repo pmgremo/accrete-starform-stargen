@@ -28,15 +28,11 @@
 
 #include <time.h>
 
-#include "rand.h"
 #include "system.h"
 #include "const.h"
 
-#ifdef MAIN
 #include <stdio.h>
 struct Star star;
-
-#endif
 
 #define MINMAG -7
 #define MAXMAG 16
@@ -173,7 +169,7 @@ double StarDensity[N_SPC_CLASS+1] =
 char    SpectralClass[9] =
 {'O', 'B', 'A', 'F', 'G', 'K', 'M', 'L', 'T'};
 
-char   *LuminosityClass[8] =
+const char *  LuminosityClass[8] =
 {"Ia ", "Ib ", "II ", "III", "IV ", "V  ", "VI ", "VII"};
 
 double

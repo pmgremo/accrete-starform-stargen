@@ -75,6 +75,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <float.h>
 
 #include <getopt.h>
 
@@ -88,7 +89,7 @@
 #define XSTR_IOSTREAM
 #define LEXER_IOSTREAM
 
-#include <xstring.h>
+#include <string.h>
 
 #endif /* C++ */
 

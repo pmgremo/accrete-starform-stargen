@@ -56,7 +56,7 @@ trait UWPCalc {
   /**
     * Original Algorithm uses (int)(radius/800.0)
     *
-    * @param radius
+    * @param radius radius
     * @return
     */
   protected def calcUWPSize(radius: Double): Char = size.find(radius <= _).map(bin => size.indexOf(bin).toString.head).getOrElse('A')
@@ -73,7 +73,7 @@ trait UWPCalc {
     * else return 14;
     * }
     *
-    * @param surfacePressure
+    * @param surfacePressure surfacePressure
     * @return
     */
   protected def calcUWPAtmos(surfacePressure: Double): Char = pressure.find{ case (p,_) => surfacePressure < p}.map(_._2).getOrElse('D')
@@ -81,12 +81,12 @@ trait UWPCalc {
   /**
     * original alg(int)((node2->hydrosphere+node2->iceCover)*10.0)
     *
-    * @param hydrosphere
-    * @param iceCover
+    * @param hydrosphere hydrosphere
+    * @param iceCover iceCover
     * @return
     */
   protected def calcUWPHydrographics(hydrosphere: Double, iceCover: Double): Char = {
     val lvl = ((hydrosphere + iceCover) * 10.0).floor.toInt
-    size.find(lvl <= _).map(bin => hydrographics.indexOf(bin).toString.head).getOrElse('A')
+    size.find(lvl <= _).map(bin => hydrographics.indexOf(bin.floor.toInt).toString.head).getOrElse('A')
   }
 }

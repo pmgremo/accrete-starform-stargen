@@ -1,12 +1,13 @@
 package com.szadowsz.starform.sim
 
-import com.szadowsz.starform.profile.starform.{FoggProfile, FolkinsProfile}
-import org.scalatest.{FlatSpec, Matchers}
+import com.szadowsz.starform.profile.starform.FoggProfile
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
   * Created on 02/05/2017.
   */
-class WebbSimFlatSpec extends FlatSpec with Matchers {
+class WebbSimFlatSpec extends AnyFlatSpec with Matchers {
 
   behavior of "The Webb Implementation of Accrete Simulation"
 

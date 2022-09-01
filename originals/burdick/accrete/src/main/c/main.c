@@ -13,7 +13,7 @@
   #define VERBOSE
 */
 
-// /*  These are all of the global variables used during accretion:  */
+/*  These are all of the global variables used during accretion:  */
 float anum;
 planet_pointer planet_head;
 double stellar_mass_ratio, stellar_luminosity_ratio, main_seq_life;
