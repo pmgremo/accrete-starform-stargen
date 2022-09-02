@@ -482,7 +482,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     stats = initStats()
 
     val seed = seedOpt.getOrElse(System.currentTimeMillis())
-    seedOpt.foreach(s => rand.setSeed(s))
+    rand.setSeed(seed)
     logger.debug("Setting Star System Seed to {}", seed)
 
     logger.info("Beginning Protoplanet Generation for {}", seed)

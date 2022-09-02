@@ -50,7 +50,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the paper") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -97,7 +97,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -144,7 +144,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -191,7 +191,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -205,12 +205,12 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
     val pMass = UnitConverter.kgToSolarMass(3.92E25)
     val pAxis = 3.7
     val orbitZone = eCalc.orbitalZone(star.luminosity,pAxis)
-    val expectedEqRadius = 18682.0
-    val expectedDensity = 1.44
+    val expectedEqRadius = 16012.8
+    val expectedDensity = 2.27
     val expectedYear = 2598.0
     val pEcc = 5E-2
     val expectedSynch = false
-    val expectedDayLength = 14.92
+    val expectedDayLength = 12.79
 
     it("it's Equatorial Radius And Density should match the values in the paper") {
       val (equatorialRadius,density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -238,7 +238,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -252,12 +252,12 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
     val pMass = UnitConverter.kgToSolarMass(1.98E26)
     val pAxis = 5.75
     val orbitZone = eCalc.orbitalZone(star.luminosity,pAxis)
-    val expectedEqRadius = 33937.0
-    val expectedDensity = 1.21
+    val expectedEqRadius = 51395.2
+    val expectedDensity = 0.34
     val expectedYear = 5022.0
     val pEcc = 5E-2
     val expectedSynch = false
-    val expectedDayLength = 12.02
+    val expectedDayLength = 18.27
 
     it("it's Equatorial Radius And Density should match the values in the paper") {
       val (equatorialRadius,density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -285,7 +285,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -332,7 +332,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -346,12 +346,12 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
     val pMass = UnitConverter.kgToSolarMass(2.9E26)
     val pAxis = 22.8
     val orbitZone = eCalc.orbitalZone(star.luminosity,pAxis)
-    val expectedEqRadius = 43843.0
-    val expectedDensity = 0.82
+    val expectedEqRadius = 31364.6
+    val expectedDensity = 2.24
     val expectedYear = 39682.0
     val pEcc = 0.14
     val expectedSynch = false
-    val expectedDayLength = 12.87
+    val expectedDayLength = 9.21
 
     it("it's Equatorial Radius And Density should match the values in the paper") {
       val (equatorialRadius,density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -379,7 +379,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 
@@ -426,7 +426,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be (expectedSynch)
 

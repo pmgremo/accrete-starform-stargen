@@ -1,6 +1,6 @@
 /* Language plugins to aid in compilation of target languages, probably best to be explicit here.*/
 plugins {
-    id "com.github.maiflai.scalatest" version "0.24"
+    id "com.github.maiflai.scalatest" version "0.32"
     id "java"
     id "scala"
 }
@@ -17,7 +17,6 @@ ext {
 }
 
 idea {
-
     module {
         downloadJavadoc = true
         downloadSources = true

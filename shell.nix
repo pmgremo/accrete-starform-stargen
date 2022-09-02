@@ -5,13 +5,9 @@ in pkgs.mkShell {
 
   buildInputs = with pkgs; [
     git
-    jdk11_headless
+    jdk17_headless
     gradle
     gcc
     scala
   ];
-  shellHook = with pkgs;
-      ''
-      export JAVA_HOME=${jdk11_headless}
-      '';
 }
