@@ -1,6 +1,6 @@
 package com.szadowsz.starform.model.keris
 
-import com.szadowsz.starform.model.eco.calc.{FoggEcoCalc, KerisEcoCalc}
+import com.szadowsz.starform.model.eco.calc.KerisEcoCalc
 import com.szadowsz.starform.model.star.calc.FoggStarCalc
 import com.szadowsz.starform.model.star.constants.FoggStarConstants
 import com.szadowsz.starform.system.bodies.star.FoggStar
@@ -57,7 +57,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -66,14 +66,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Day Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (day, _, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedDayTemp * tolerancePercentage
       day should be(expectedDayTemp +- tolerance)
     }
 
     it("it's Night Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, night, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedNightTemp * tolerancePercentage
       night should be(expectedNightTemp +- tolerance)
@@ -81,14 +81,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMaxTemp * tolerancePercentage
       max should be(expectedMaxTemp +- tolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMinTemp * tolerancePercentage
       min should be(expectedMinTemp +- tolerance)
@@ -133,7 +133,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -142,14 +142,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMaxTemp * tolerancePercentage
       max should be(expectedMaxTemp +- tolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMinTemp * tolerancePercentage
       min should be(expectedMinTemp +- tolerance)
@@ -193,7 +193,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -202,14 +202,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Day Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (day, _, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedDayTemp * tolerancePercentage
       day should be(expectedDayTemp +- tolerance)
     }
 
     it("it's Night Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, night, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedNightTemp * tolerancePercentage
       night should be(expectedNightTemp +- tolerance)
@@ -217,14 +217,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMaxTemp * tolerancePercentage
       max should be(expectedMaxTemp +- tolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMinTemp * tolerancePercentage
       min should be(expectedMinTemp +- tolerance)
@@ -269,7 +269,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -316,7 +316,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -363,7 +363,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -410,7 +410,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -457,7 +457,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -504,7 +504,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
         expectedDensity,
         isGasGiant
       )
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -529,8 +529,8 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     val expectedDayLength = 29.65
     val expectedDayTemp = UnitConverter.celsiusToKelvin(-222.26)
     val expectedNightTemp = UnitConverter.celsiusToKelvin(-233.76)
-    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-168.47)
-    val expectedMinTemp = UnitConverter.celsiusToKelvin(-260.67)
+    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-210.66)
+    val expectedMinTemp = UnitConverter.celsiusToKelvin(-246.16)
 
     it("it's Equatorial Radius And Density should match the values in the example") {
       val (equatorialRadius, density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -550,7 +550,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -559,14 +559,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Day Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (day, _, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedDayTemp * tolerancePercentage
       day should be(expectedDayTemp +- tolerance)
     }
 
     it("it's Night Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, night, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedNightTemp * tolerancePercentage
       night should be(expectedNightTemp +- tolerance)
@@ -574,14 +574,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMaxTemp * tolerancePercentage
       max should be(expectedMaxTemp +- tolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMinTemp * tolerancePercentage
       min should be(expectedMinTemp +- tolerance)
@@ -604,8 +604,8 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     val expectedDayLength = 41.79
     val expectedDayTemp = UnitConverter.celsiusToKelvin(-222.74)
     val expectedNightTemp = UnitConverter.celsiusToKelvin(-237.40)
-    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-189.86)
-    val expectedMinTemp = UnitConverter.celsiusToKelvin(-260.76)
+    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-207.63)
+    val expectedMinTemp = UnitConverter.celsiusToKelvin(-252.34)
 
     it("it's Equatorial Radius And Density should match the values in the example") {
       val (equatorialRadius, density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -625,7 +625,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -634,14 +634,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Day Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (day, _, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedDayTemp * tolerancePercentage
       day should be(expectedDayTemp +- tolerance)
     }
 
     it("it's Night Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, night, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedNightTemp * tolerancePercentage
       night should be(expectedNightTemp +- tolerance)
@@ -649,14 +649,14 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMaxTemp * tolerancePercentage
       max should be(expectedMaxTemp +- tolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
       val tolerance = expectedMinTemp * tolerancePercentage
       min should be(expectedMinTemp +- tolerance)
@@ -679,8 +679,8 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     val expectedDayLength = 32.60
     val expectedDayTemp = UnitConverter.celsiusToKelvin(-226.62)
     val expectedNightTemp = UnitConverter.celsiusToKelvin(-237.89)
-    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-171.05)
-    val expectedMinTemp = UnitConverter.celsiusToKelvin(-261.69)
+    val expectedMaxTemp = UnitConverter.celsiusToKelvin(-211.73)
+    val expectedMinTemp = UnitConverter.celsiusToKelvin(-252.86)
 
     it("it's Equatorial Radius And Density should match the values in the example") {
       val (equatorialRadius, density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
@@ -700,7 +700,7 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
 
     it("it's Day Length should match the value in the example") {
       val angularVelocity = eCalc.totalAngularVelocity(star.mass, star.age, pMass, expectedEqRadius, pAxis, expectedDensity, isGasGiant)
-      val (synch, resonant, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
+      val (synch, _, lengthOfDay) = eCalc.dayLength(angularVelocity, expectedYear, pEcc)
 
       synch should be(expectedSynch)
 
@@ -709,32 +709,32 @@ class KerisSampleSystemSpec extends AnyFunSpec with Matchers {
     }
 
     it("it's Day Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (day, _, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
-      val tolerance = expectedDayTemp * tolerancePercentage
-      day should be(expectedDayTemp +- tolerance)
+      val dayTolerance = expectedDayTemp * tolerancePercentage
+      day should be(expectedDayTemp +- dayTolerance)
     }
 
     it("it's Night Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, night, _, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
-      val tolerance = expectedNightTemp * tolerancePercentage
-      night should be(expectedNightTemp +- tolerance)
+      val nightTolerance = expectedNightTemp * tolerancePercentage
+      night should be(expectedNightTemp +- nightTolerance)
     }
 
 
     it("it's Maximum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, max, _) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
-      val tolerance = expectedMaxTemp * tolerancePercentage
-      max should be(expectedMaxTemp +- tolerance)
+      val maxTolerance = expectedMaxTemp * tolerancePercentage
+      max should be(expectedMaxTemp +- maxTolerance)
     }
 
     it("it's Minimum Temperature should match the value in the example") {
-      val (day, night, max, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
+      val (_, _, _, min) = eCalc.calcTempLimits(pEcc, surfPress, surfTemp, tilt, expectedDayLength)
 
-      val tolerance = expectedMinTemp * tolerancePercentage
-      min should be(expectedMinTemp +- tolerance)
+      val minTolerance = expectedMinTemp * tolerancePercentage
+      min should be(expectedMinTemp +- minTolerance)
     }
   }
 }

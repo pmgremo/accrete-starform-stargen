@@ -208,7 +208,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     */
   final protected def splitForSubPlanet(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
     val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
-    val middle: DustBand = DustBand(proto.innerBandLimit, proto.outerBandLimit, false, band.hasGas && hasGas)
+    val middle: DustBand = DustBand(proto.innerBandLimit, proto.outerBandLimit, hasDust = false, hasGas = band.hasGas && hasGas)
     val right: DustBand = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
     List(left, middle, right)
   }
@@ -232,7 +232,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     */
   final protected def splitOnPlanetMaxEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
     val right = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
-    val left = DustBand(band.innerEdge, proto.outerBandLimit, false, hasGas)
+    val left = DustBand(band.innerEdge, proto.outerBandLimit, hasDust = false, hasGas = hasGas)
     List(left, right)
   }
 
@@ -254,7 +254,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @return the split bands
     */
   final protected def splitOnPlanetMinEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
-    val right = DustBand(proto.innerBandLimit, band.outerEdge, false, band.hasGas && hasGas)
+    val right = DustBand(proto.innerBandLimit, band.outerEdge, hasDust = false, hasGas = band.hasGas && hasGas)
     val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
     List(left, right)
   }
@@ -287,7 +287,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
       splitOnPlanetMinEdge(proto, band, retainGas)
 
     } else if (band.innerEdge >= proto.innerBandLimit && band.outerEdge <= proto.outerBandLimit) {
-      List(DustBand(band.innerEdge, band.outerEdge, false, if (band.hasGas) retainGas else false))
+      List(DustBand(band.innerEdge, band.outerEdge, hasDust = false, hasGas = if (band.hasGas) retainGas else false))
     } else {
       List(band)
     }
@@ -481,8 +481,8 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     logger.debug("Initialising Statistics Recorder")
     stats = initStats()
 
+    val seed = seedOpt.getOrElse(System.currentTimeMillis())
     seedOpt.foreach(s => rand.setSeed(s))
-    val seed = seedOpt.getOrElse(rand.getSeed)
     logger.debug("Setting Star System Seed to {}", seed)
 
     logger.info("Beginning Protoplanet Generation for {}", seed)

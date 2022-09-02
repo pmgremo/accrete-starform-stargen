@@ -15,7 +15,7 @@ class KerisEcoCalc extends BurdickEcoCalc {
     (kerisLimit(2 * dv / dm - 1) + 1) / 2 * dm + min
   }
 
-  def calcTempLimits(ecc : Double, surf_pressure : Double, surf_temp : Double, axial_tilt : Double, day : Double): (Double, Double, Double, Double) = {
+  def calcTempLimits(ecc: Double, surf_pressure: Double, surf_temp: Double, axial_tilt: Double, day: Double): (Double, Double, Double, Double) = {
     val pressmod = 1 / Math.sqrt(1 + 20 * surf_pressure / 1000.0)
     val ppmod = 1 / Math.sqrt(10 + 5 * surf_pressure / 1000.0)
     val tiltmod = Math.cos(axial_tilt * Math.PI / 180) * Math.pow(1 + ecc, 2)
@@ -26,10 +26,10 @@ class KerisEcoCalc extends BurdickEcoCalc {
     val min = surf_temp / Math.sqrt(day + 24)
 
     val hi = mh * surf_temp
-    val lo = Math.max(ml * surf_temp,min)
+    val lo = Math.max(ml * surf_temp, min)
     val sh = hi + Math.pow((100 + hi) * tiltmod, Math.sqrt(ppmod))
-    val wl = Math.max(lo - Math.pow((150 + lo) * tiltmod, Math.sqrt(ppmod)),0)
+    val wl = Math.max(lo - Math.pow((150 + lo) * tiltmod, Math.sqrt(ppmod)), 0)
 
-    (kerisSoft(hi, max, min),kerisSoft(lo, max, min),kerisSoft(sh, max, min),kerisSoft(wl, max, min))
+    (kerisSoft(hi, max, min), kerisSoft(lo, max, min), kerisSoft(sh, max, min), kerisSoft(wl, max, min))
   }
 }

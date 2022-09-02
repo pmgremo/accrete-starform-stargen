@@ -1,6 +1,9 @@
 /* Language plugins to aid in compilation of target languages, probably best to be explicit here.*/
-apply plugin: 'java'
-apply plugin: 'scala'
+plugins {
+    id "com.github.maiflai.scalatest" version "0.24"
+    id "java"
+    id "scala"
+}
 
 /*
  * Specifying the versions as extra variables here so that they can be reused across multiple dependencies. Note you
@@ -40,4 +43,5 @@ dependencies {
 
     testImplementation group: 'org.scalatest', name: 'scalatest_2.13', version: scalaTestVersion
     testImplementation group: 'junit', name: 'junit', version: junitVersion
+    testRuntimeOnly group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.64.0'
 }
