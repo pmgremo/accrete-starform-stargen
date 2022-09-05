@@ -4,7 +4,8 @@ import com.szadowsz.starform.model.SimulationStats
 import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
-import org.slf4j.{Logger, LoggerFactory}
+
+import java.lang.System.Logger.Level.{DEBUG, INFO}
 
 /**
   * Abstract Simulation Class that attempts to recreated the procedures detailed by Stephen H. Dole in "Formation of Planetary Systems by Aggregation: A
@@ -13,10 +14,7 @@ import org.slf4j.{Logger, LoggerFactory}
   */
 abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
 
-  /**
-    * SLF4J built logger to document the goings on during the generation.
-    */
-  protected val logger: Logger = LoggerFactory.getLogger(getClass)
+  protected val logger: System.Logger = System.getLogger(getClass.getName)
 
   /**
     * the placement strategy to use when inserting new planetismals.
@@ -320,7 +318,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param proto newly coalesced proto-planet
     */
   final protected def updateDustLanes(proto: ProtoPlanet): Unit = {
-    logger.debug("Updating Dust Lanes")
+    logger.log(DEBUG, "Updating Dust Lanes")
     val retainGas: Boolean = !proto.isGasGiant // done here to save recalculating if the planet is a gas giant a bunch of times.
     dust = dust.flatMap(d => splitBands(proto, d, retainGas))
     dust = mergeDustBands(dust.head, dust.tail)
@@ -343,7 +341,8 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   final protected def insertPlanet(proto: ProtoPlanet): Unit = {
     stats = stats.acceptNuclei
     planetismals = (proto +: planetismals).sortBy(_.axis)
-    logger.info("Injecting protoplanet at {} AU Successful.", proto.axis)
+    logger.log(INFO, "Injecting protoplanet at {0} AU Successful.", proto.axis)
+
   }
 
   /**
@@ -390,12 +389,12 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return true if the newcomer collided with an existing planet, false if not
     */
   final protected def coalescePlanetesimals(newcomer: ProtoPlanet): Boolean = {
-    logger.debug("Checking for collisions.")
+    logger.log(DEBUG, "Checking for collisions.")
     val result = planetismals.find(p => (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
       (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis)))
 
     result.foreach { existing =>
-      logger.info("Collision between planetesimals {} AU and {} AU", newcomer.axis, existing.axis)
+      logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
       stats = stats.mergeNuclei
       mergeTwoPlanets(existing, newcomer)
     }
@@ -415,7 +414,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method dist_planetary_masses, line 145 in  Protosystem.java - Carl Burke (starform)
     */
   final protected def accrete(): Unit = {
-    logger.debug("Initialising Statistics Recorder")
+    logger.log(DEBUG, "Initialising Statistics Recorder")
     planetismals = Nil
     dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
 
@@ -424,10 +423,10 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       val ecc = iStrat.eccentricity(rand)
       val proto: ProtoPlanet = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
       stats = stats.injectNuclei
-      logger.debug("Checking {} AU for suitability.", proto.axis)
+      logger.log(DEBUG, "Checking {0} AU for suitability.", proto.axis)
 
       if (isDustAvailable(proto.innerBandLimit, proto.outerBandLimit)) {
-        logger.info("Injecting protoplanet at {} AU.", proto.axis)
+        logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
 
         accreteDust(proto)
         updateDustLanes(proto)
@@ -438,10 +437,10 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
           }
         } else {
           // TODO check if this if/else is needed
-          logger.debug("Injection of protoplanet at {} AU failed due to large neighbor.", proto.axis)
+          logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
         }
       } else {
-        logger.debug("Injection of protoplanet at {} AU failed due to no available dust.", proto.axis)
+        logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to no available dust.", proto.axis)
       }
     }
   }
@@ -462,19 +461,19 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return the generated solar system.
     */
   final def generateSystem(seedOpt: Option[Long] = None): StarSystem = {
-    logger.debug("Initialising Statistics Recorder")
+    logger.log(DEBUG, "Initialising Statistics Recorder")
     stats = initStats()
 
     seedOpt.foreach(s => rand.setSeed(s))
     val seed = seedOpt.getOrElse(rand.getSeed)
-    logger.debug("Setting Star System Seed to {}", seed)
+    logger.log(DEBUG, "Setting Star System Seed to {0}", seed)
 
-    logger.info("Beginning Protoplanet Generation for {}", seed)
+    logger.log(INFO, "Beginning Protoplanet Generation for {0}", seed)
 
     val planets = generatePlanets()
     stats = stats.finished
 
-    logger.info("Finished Protoplanet Generation for {} in {}ms", seed, stats.timeElapsed)
+    logger.log(INFO, "Finished Protoplanet Generation for {0} in {1}ms", seed, stats.timeElapsed)
     createSystem(seed, stats, planets)
   }
 }

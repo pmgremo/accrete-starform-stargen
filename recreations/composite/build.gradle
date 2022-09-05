@@ -12,7 +12,6 @@ plugins {
 ext {
     scalaVersion = '2.13.8'
     scalaTestVersion = '3.2.13'
-    slf4jVersion = '1.7.12'
     junitVersion = '4.13.2'
 }
 
@@ -36,9 +35,6 @@ dependencies {
     implementation group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
 
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
-
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: slf4jVersion
 
     testImplementation group: 'org.scalatest', name: 'scalatest_2.13', version: scalaTestVersion
     testImplementation group: 'junit', name: 'junit', version: junitVersion
