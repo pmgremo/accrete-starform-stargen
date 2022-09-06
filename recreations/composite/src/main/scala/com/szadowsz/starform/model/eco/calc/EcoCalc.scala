@@ -12,20 +12,18 @@ import com.szadowsz.starform.unit.{UnitConstants, UnitConverter}
   * @author Zakski : 11/09/2016.
   */
 trait EcoCalc extends UnitConstants {
-  this : EcoConstants =>
+  this: EcoConstants =>
 
   /**
     * Function to calculate the orbital zone of a planet extrapolated from "5. Planetary Characteristics" in "Extra-Solar Planetary Systems: A Microcomputer
     * Simulation" by Martyn J. Fogg.
     *
     * @note range of 1-3
-    *
     * @see p.505, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method kothari_radius, lines 74-113 in enviro.c - Mat Burdick (accrete)
     * @see method orb_zone, line 28 in enviro.c - Keris (starform)
     * @see method orb_zone, line 28 in enviro.c - Mat Burdick (starform)
     * @see method orb_zone, line 272 in Star.java - Carl Burke (starform)
-    *
     * @param stellarLuminosity the brightness of the star.
     * @param axis              mean habitable radius in AU.
     * @return a value between 1 and 3
@@ -45,14 +43,12 @@ trait EcoCalc extends UnitConstants {
     * Dr. D. S. Kothari.
     *
     * @note unit is km.
-    *
     * @see eq. 9, p. 505, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see eq. 23, p. 840, The Internal Constitution of Planets - D. S. Kothari
     * @see method kothari_radius, lines 114-122 in enviro.c - Mat Burdick (accrete)
     * @see method kothari_radius, line 68 in enviro.c - Keris (starform)
     * @see method kothari_radius, line 68 in enviro.c - Mat Burdick (starform)
     * @see method kothari_radius, line 684 in Planet.java - Carl Burke (starform)
-    *
     * @param mass         the planetary mass
     * @param atomicWeight The average atomic weight of the .
     * @param atomicNum    the orbital zone.
@@ -76,13 +72,11 @@ trait EcoCalc extends UnitConstants {
     * Empirical formulae to determine density based on distance from primary. listed as eq. 10 in Fogg's article.
     *
     * @note unit is g/cm3.
-    *
     * @see eq. 10, p. 505, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method empirical_density, line 131 in enviro.c - Mat Burdick (accrete)
     * @see method empirical_density, line 133 in enviro.c - Keris (starform)
     * @see method empirical_density, line 131 in enviro.c - Mat Burdick (starform)
     * @see method empirical_density, line 447 in Planet.java - Carl Burke (starform)
-    *
     * @param mass      planet mass in solar Mass.
     * @param axis      Semi-major axis of orbit in AU
     * @param ecosphere mean habitable radius in AU.
@@ -106,14 +100,12 @@ trait EcoCalc extends UnitConstants {
     * "Extra-Solar Planetary Systems: A Microcomputer Simulation" by Martyn J. Fogg.
     *
     * @note unit is g/cm3.
-    *
     * @see p. 505, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see eq. 10, p. 838, The Internal Constitution of Planets - D. S. Kothari
     * @see method volume_density, line 151 in enviro.c - Mat Burdick (accrete)
     * @see method volume_density, line 153 in enviro.c - Keris (starform)
     * @see method volume_density, line 151 in enviro.c - Mat Burdick (starform)
     * @see method volume_density, line 467 in Planet.java - Carl Burke (starform)
-    *
     * @param mass     the planetary mass in solar mass.
     * @param eqRadius Equatorial radius in kilometers.
     * @return Average density in grams per cubic centimeter.
@@ -155,12 +147,10 @@ trait EcoCalc extends UnitConstants {
     * for when the orbiting body has a non-negligible mass.
     *
     * @note the unit is earth days.
-    *
     * @see method period, line 168 in enviro.c - Mat Burdick (accrete)
     * @see method period, line 167 in enviro.c - Keris (starform)
     * @see method period, line 168 in enviro.c - Mat Burdick (starform)
     * @see method period, line 486 in Planet.java - Carl Burke (starform)
-    *
     * @param smallMass small body mass in Solar Mass. Typically the Planet.
     * @param largeMass larger body mass in Solar Mass. Typically the Sun.
     * @param axis      Semi-major axis of orbit in AU.
@@ -178,7 +168,6 @@ trait EcoCalc extends UnitConstants {
     * @see method day_length, lines 209-218 in enviro.c - Keris (starform)
     * @see method day_length, lines 206-213 in enviro.c - Mat Burdick (starform)
     * @see method day_length, lines 531-542 in Planet.java - Carl Burke (starform)
-    *
     * @param massInGrams Planetary Mass in grams.
     * @param radiusInCm  equatorial radius in cm.
     * @param isGiant     true if it is a gas giant, false otherwise.
@@ -199,7 +188,6 @@ trait EcoCalc extends UnitConstants {
     * @see method day_length, line 222 in enviro.c - Keris (starform)
     * @see method day_length, line 218 in enviro.c - Mat Burdick (starform)
     * @see method day_length, line 546 in Planet.java - Carl Burke (starform)
-    *
     * @param stellarMass Mass of the Star in Solar Mass.
     * @param massInGrams Planetary Mass in grams.
     * @param radiusInCm  equatorial radius in cm.
@@ -228,7 +216,6 @@ trait EcoCalc extends UnitConstants {
     * @see method day_length, lines 209-228 in enviro.c - Keris (starform)
     * @see method day_length, lines 206-223 in enviro.c - Mat Burdick (starform)
     * @see method day_length, lines 531-552 in Planet.java - Carl Burke (starform)
-    *
     * @param stellarMass Mass of the Star in Solar Mass.
     * @param stellarAge  Age of the Star.
     * @param mass        Mass of the planet in Solar Mass.
@@ -253,7 +240,6 @@ trait EcoCalc extends UnitConstants {
     * @see method day_length, line 241 in enviro.c - Keris (starform)
     * @see method day_length, line 232 in enviro.c - Mat Burdick (starform)
     * @see method day_length, line 562 in Planet.java - Carl Burke (starform)
-    *
     * @param ecc eccentricity of the planet's orbit.
     * @return the resonance
     */
@@ -266,7 +252,6 @@ trait EcoCalc extends UnitConstants {
     * @see method day_length, line 193 in enviro.c - Keris (starform)
     * @see method day_length, line 195 in enviro.c - Mat Burdick (starform)
     * @see method day_length, line 515 in Planet.java - Carl Burke (starform)
-    *
     * @param angVelocity the rotation rate of the planet in radians per second.
     * @param orbitLength length of the planet's orbit in years, upper bound day length.
     * @param ecc         eccentricity of the planet's orbit.
@@ -298,12 +283,10 @@ trait EcoCalc extends UnitConstants {
     * so instead we use the gravitational constant.
     *
     * @note unit is m / sec^2^. Just like Secondary School Physics books.
-    *
     * @see method acceleration, line 319 in enviro.c - Mat Burdick (accrete)
     * @see method acceleration, line 324 in enviro.c - Keris (starform)
     * @see method acceleration, line 317 in enviro.c - Mat Burdick (starform)
     * @see method acceleration, line 646 in Planet.java - Carl Burke (starform)
-    *
     * @param mass   the mass of the planet in solar mass.
     * @param radius the radius of the planet in kilometers.
     * @return surface gravity of the planet in m per sec squared.
@@ -320,13 +303,11 @@ trait EcoCalc extends UnitConstants {
     * to find the barycentric escape velocity.
     *
     * @note unit is m / sec.
-    *
     * @see eq. 15, p. 506, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method escape_vel, line 268 in enviro.c - Mat Burdick (accrete)
     * @see method escape_vel, line 290 in enviro.c - Keris (starform)
     * @see method escape_vel, line 282 in enviro.c - Mat Burdick (starform)
     * @see method escape_vel, line 612 in Planet.java - Carl Burke (starform)
-    *
     * @param surfaceGravity surface gravity of the planet in km / sec^2^.
     * @param radius         the radius of the planet in kilometers.
     * @return escape velocity of the planet in km per sec.
@@ -344,13 +325,11 @@ trait EcoCalc extends UnitConstants {
     *
     * @note unit is m / sec.
     * @note Modified from Fogg eq. 16 to use Molar Gas Constant variant.
-    *
     * @see eq. 16, p. 507, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method rms_vel, line 285 in enviro.c - Mat Burdick (accrete)
     * @see method rms_vel, line 290 in enviro.c - Keris (starform)
     * @see method rms_vel, line 282 in enviro.c - Mat Burdick (starform)
     * @see method rms_vel, line 612 in Planet.java - Carl Burke (starform)
-    *
     * @param molecularWeight    kg per mole of the molecule, we use N2(Nitrogen) as ours.
     * @param perihelionDistance closest the planet gets to the sun, used to calculate a value for the exospheric temperature.
     * @return root mean square velocity of the molecule in the exosphere.
@@ -368,7 +347,6 @@ trait EcoCalc extends UnitConstants {
     * @see method vol_inventory, lines 372-373 in enviro.c - Keris (starform)
     * @see method vol_inventory, lines 365-366 in enviro.c - Mat Burdick (starform)
     * @see method vol_inventory, lines 698-699 in Planet.java - Carl Burke (starform)
-    *
     * @param escapeVel semi-major axis in AU.
     * @param rmsVel    greenhouse radius in AU.
     * @return true if the planet can retain gas, false otherwise
@@ -383,7 +361,6 @@ trait EcoCalc extends UnitConstants {
     * @see method grnhouse, line 350 in enviro.c - Keris (starform)
     * @see method grnhouse, line 344 in enviro.c - Mat Burdick (starform)
     * @see method grnhouse, line 367 in Planet.java - Carl Burke (starform)
-    *
     * @param orbit      semi-major axis in AU.
     * @param greenhouse greenhouse radius in AU.
     * @return true if there is a runnaway greenhouse effect, false otherwise
@@ -394,13 +371,11 @@ trait EcoCalc extends UnitConstants {
     * This implements Fogg's eq.18.
     *
     * @note The pressure returned is in units of millibars (mb).
-    *
     * @see eq. 18, p. 507, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method pressure, line 404 in enviro.c - Mat Burdick (accrete)
     * @see method pressure, line 409 in enviro.c - Keris (starform)
     * @see method pressure, line 401 in enviro.c - Mat Burdick (starform)
     * @see method pressure, line 736 in Planet.java - Carl Burke (starform)
-    *
     * @param vGas    the volatile gas inventory.
     * @param radius  the radius of the planet in kilometers.
     * @param gravity the gravity of the planet in m/s2.
@@ -449,13 +424,11 @@ trait EcoCalc extends UnitConstants {
   /** This is Fogg's eq.19, intended to calculate the effective surface temperature in kelvin.
     *
     * @note The effective surface temperature is returned in units of kelvin.
-    *
     * @see Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method eff_temp, line 511 in enviro.c - Mat Burdick (accrete)
     * @see method eff_temp, line 516 in enviro.c - Keris (starform)
     * @see method eff_temp, line 509 in enviro.c - Mat Burdick (starform)
     * @see method eff_temp, line 836 in Planet.java - Carl Burke (starform)
-    *
     * @param ecosphereRadius the mean habitable radius for the parent star in AU.
     * @param orbitalRadius   the orbiting axis of the planet in AU.
     * @param albedo          the albedo of the planet.
@@ -471,7 +444,6 @@ trait EcoCalc extends UnitConstants {
     * greenhouse effect.
     *
     * @note The increase in surface temperature is returned in units of kelvin.
-    *
     * @param opticalDepth    the optical depth of the component greenhouse gases.
     * @param effectiveTemp   the current effective suface temperature in dgerees kelvin.
     * @param surfacePressure the atmosphere pressure in millibars.
@@ -504,7 +476,7 @@ trait EcoCalc extends UnitConstants {
     Math.min(Math.max(ice, 1.5 * hydrosphereFraction), 0.0)
   }
 
-  def calcAlbedo(hydrosphereFraction: Double, cloudFraction: Double, iceFraction: Double):Double = {
+  def calcAlbedo(hydrosphereFraction: Double, cloudFraction: Double, iceFraction: Double): Double = {
     val rockFraction = 1.0 - hydrosphereFraction - iceFraction
     val cloudAdjust = cloudFraction / List(rockFraction, cloudFraction, hydrosphereFraction).count(_ > 0.0)
     val rock = Math.max(rockFraction - cloudAdjust, 0.0)
@@ -571,7 +543,7 @@ trait EcoCalc extends UnitConstants {
     if (atmosphere == Atmosphere.FEEDBACK_MODEL) {
       var previous = Double.NaN
       val boilPoint = boilingPoint(surfPressure)
-      do {
+      while ( {
         previous = surfTemperature
         clouds = cloudFraction(surfTemperature)
         water = hydrosphereFraction(volatileGasInventory, eqRadius)
@@ -586,7 +558,8 @@ trait EcoCalc extends UnitConstants {
         val effectiveTemp = effectiveTemperature(ecoRadius, axis, albedo)
         val greenhouseDelta = greenhouseEffectDelta(optical_depth, effectiveTemp, surfPressure)
         surfTemperature = effectiveTemp + greenhouseDelta
-      } while (Math.abs(surfTemperature - previous) > 1.0)
+        Math.abs(surfTemperature - previous) > 1.0
+      }) ()
     }
     (water, clouds, ice, albedo, surfTemperature)
   }
@@ -601,15 +574,14 @@ trait EcoCalc extends UnitConstants {
     * @see method vol_inventory, line 361 in enviro.c - Mat Burdick (accrete)
     * @see method vol_inventory, line 359 in enviro.c - Mat Burdick (starform)
     * @see method vol_inventory, line 692 in Planet.java - Carl Burke (starform)
-    *
-    * @param mass planetary mass in terms of solar mass.
-    * @param zone the zone the planet is classified within (1-3)
+    * @param mass          planetary mass in terms of solar mass.
+    * @param zone          the zone the planet is classified within (1-3)
     * @param doesRetainGas true if the planet is too close to the sun, false otherwise (Greenhouse Effect)
-    * @param hasGE true if the planet is too close to the sun, false otherwise (Greenhouse Effect)
-    * @param stellarMass mass of the central star in terms of solar mass.
+    * @param hasGE         true if the planet is too close to the sun, false otherwise (Greenhouse Effect)
+    * @param stellarMass   mass of the central star in terms of solar mass.
     * @return volatile gas inventory.
     */
-  def vGasInventory(rand: RandGenTrait, mass: Double, zone: Int, doesRetainGas : Boolean, hasGE: Boolean, stellarMass: Double): Double = {
+  def vGasInventory(rand: RandGenTrait, mass: Double, zone: Int, doesRetainGas: Boolean, hasGE: Boolean, stellarMass: Double): Double = {
     if (doesRetainGas) {
       val q = zone match {
         case 1 => 100000.0
@@ -633,7 +605,7 @@ trait EcoCalc extends UnitConstants {
     }
   }
 
-  def molecule_limit(mass: Double, escapeVel: Double,equat_radius: Double): Double = {
+  def molecule_limit(mass: Double, escapeVel: Double, equat_radius: Double): Double = {
     if (escapeVel == 0.0) return 0.0
     (3.0 * Math.pow(GAS_RETENTION_THRESHOLD * CM_PER_METER, 2.0) * (MOLAR_GAS_CONST * EXOSPHERE_TEMP)) / (escapeVel * escapeVel)
   }
@@ -642,8 +614,8 @@ trait EcoCalc extends UnitConstants {
   /*   The orbital radius is expected in units of Astronomical Units (AU).    */
   /*   Inclination is returned in units of degrees.                           */
   /*--------------------------------------------------------------------------*/
-  def inclination(rand: RandGenTrait, orbital_radius : Double): Double = {
-    val t = (EARTH_AXIAL_TILT *(rand.nextDouble() * 0.4 - 0.4)) + EARTH_AXIAL_TILT
-    (Math.pow(orbital_radius,0.2) * t) % 360
+  def inclination(rand: RandGenTrait, orbital_radius: Double): Double = {
+    val t = (EARTH_AXIAL_TILT * (rand.nextDouble() * 0.4 - 0.4)) + EARTH_AXIAL_TILT
+    (Math.pow(orbital_radius, 0.2) * t) % 360
   }
 }

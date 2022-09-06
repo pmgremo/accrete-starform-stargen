@@ -20,9 +20,9 @@ import java.lang.System.Logger.Level.{DEBUG, INFO}
   * @tparam S type of class to record the statistics of each system's generation.
   * @tparam P type of protoplanet class to be used as output by the simulation.
   */
-abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planetismal, X <: AbstractStarSystem[S,R,P]](
-                                                                                                                       profile : AccreteProfile
-                                                                                                                     ) extends AccreteSimConstants {
+abstract class AccreteSimulation[S <: Star, R <: SimulationStats[R], P <: Planetismal, X <: AbstractStarSystem[S, R, P]](
+                                                                                                                          profile: AccreteProfile
+                                                                                                                        ) extends AccreteSimConstants {
 
   /**
     * SLF4J built logger to document the goings on during the generation.
@@ -34,7 +34,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     */
   protected val rand: RandGenTrait = profile.rand
 
-  protected override val aConsts : AccreteConstants = profile.accConsts
+  protected override val aConsts: AccreteConstants = profile.accConsts
 
   /**
     * the placement strategy to use when inserting new planetismals.
@@ -49,12 +49,12 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
   /**
     * calculations to work out new protoplanet info after a collision.
     */
-  protected lazy val colCalc : CollisionCalc = profile.buildCollCalc(pCalc)
+  protected lazy val colCalc: CollisionCalc = profile.buildCollCalc(pCalc)
 
   /**
     * the accretion code to use when hoovering up dust.
     */
-  protected lazy val accCalc: AccreteCalc = profile.buildAccCalc(pCalc,this)
+  protected lazy val accCalc: AccreteCalc = profile.buildAccCalc(pCalc, this)
 
   /**
     * The central star of the system.
@@ -107,7 +107,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @param ecc  eccentrisity on a scale of 0 to 1
     * @return a freshly made proto-planet.
     */
-  final protected  def createProtoplanet(mass: Double, axis: Double, ecc: Double): ProtoPlanet = new ProtoPlanet(star,pCalc, mass, axis, ecc)
+  final protected def createProtoplanet(mass: Double, axis: Double, ecc: Double): ProtoPlanet = new ProtoPlanet(star, pCalc, mass, axis, ecc)
 
   /**
     * Steps through list of dust bands checking to see if any of those that bands that overlap the given range have dust present.
@@ -138,7 +138,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method accrete_dust, line 294 in accrete.c - Keris (starform)
     * @see method accrete_dust, line 268 in accrete.c - Mat Burdick (starform)
     * @see method accrete_dust, line 190 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto newly coalesced proto-planet
     * @param bands the current band list.
     * @return the new calculated mass
@@ -154,7 +153,7 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
         } else if (band.innerEdge >= outerSweep) {
           0.0
         } else {
-          var density: Double = if (band.hasDust) accCalc.dustDensity(star.mass,proto.axis) else 0.0
+          var density: Double = if (band.hasDust) accCalc.dustDensity(star.mass, proto.axis) else 0.0
 
           if (band.hasGas && proto.isGasGiant) {
             density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
@@ -179,16 +178,16 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method accrete_dust, line 294 in accrete.c - Keris (starform)
     * @see method accrete_dust, line 268 in accrete.c - Mat Burdick (starform)
     * @see method accrete_dust, line 190 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto newly coalesced proto-planet
     */
   final protected def accreteDust(proto: ProtoPlanet): Unit = {
     var lastMass: Double = 0.0
-    do {
+    while ( {
       lastMass = proto.mass
       val currMass = accreteDust(proto, dust)
       proto.mass = if (currMass > lastMass) currMass else lastMass
-    } while (accCalc.shouldAccreteContinue(lastMass, proto.mass))
+      accCalc.shouldAccreteContinue(lastMass, proto.mass)
+    }) ()
   }
 
   /**
@@ -202,7 +201,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method splitband, line 83 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto  newly coalesced proto-planet
     * @param band   the band to split
     * @param hasGas whether there is gas
@@ -226,7 +224,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method splithigh, line 105 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto  newly coalesced proto-planet
     * @param band   the band to split
     * @param hasGas whether there is gas
@@ -249,7 +246,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method splitlow, line 123 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto  newly coalesced proto-planet
     * @param band   the band to split
     * @param hasGas whether there is gas
@@ -272,7 +268,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto     newly coalesced proto-planet
     * @param band      current dust band we are examining
     * @param retainGas if the dust stripped bands will also retain gas.
@@ -299,13 +294,11 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * Function merges neighbouring dust lanes that have the same characteristics after an inserted planet has accreted dust/gas.
     *
     * @note Folkins' code line does not merge bands.
-    *
     * @see method CompressDustLanes, line 285 in Accrete.java - Ian Burrell (accrete)
     * @see method update_dust_lanes, line 96 in accrete.c - Mat Burdick (accrete)
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param head the current dust band we are trying to merge.
     * @param tail the remaining un merged dust bands.
     * @return the updated dust band list.
@@ -334,7 +327,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
-    *
     * @param proto newly coalesced proto-planet
     */
   final protected def updateDustLanes(proto: ProtoPlanet): Unit = {
@@ -355,7 +347,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
     * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
     * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    *
     * @param proto the new protoplanet to add to the list of protoplanets.
     */
   final protected def insertPlanet(proto: ProtoPlanet): Unit = {
@@ -375,7 +366,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
     * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
     * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    *
     * @param planet   the existing planet
     * @param newcomer the new planet
     */
@@ -403,7 +393,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
     * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
     * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    *
     * @param newcomer the new plantismal
     * @return true if the newcomer collided with an existing planet, false if not
     */
@@ -476,7 +465,6 @@ abstract class AccreteSimulation[S <: Star,R <: SimulationStats[R], P <: Planeti
     * @see method generate_stellar_system, line 47 in gensys.c - Keris (starform)
     * @see method generate_stellar_system, line 76 in starform.c - Mat Burdick (starform)
     * @see method Initialize, line 57 in  StarSystem.java - Carl Burke (starform)
-    *
     * @param seedOpt optional seed
     * @return the generated solar system.
     */

@@ -1,4 +1,4 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/2e5b0b553ab52b963052a3ed76c166fd74eabbfd.tar.gz") {}
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/21de2b973f9fee595a7a1ac4693efff791245c34.tar.gz") {}
 }:let
 
 in pkgs.mkShell {
@@ -8,6 +8,6 @@ in pkgs.mkShell {
     jdk17_headless
     gradle
     gcc
-    scala
+    dotty
   ];
 }
