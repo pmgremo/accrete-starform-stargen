@@ -1,8 +1,8 @@
 package com.szadowsz.starform.model.eco
 
 import com.szadowsz.starform.model.eco.Atmosphere.Atmosphere
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.unit.{UnitConstants, UnitConverter}
+import org.apache.commons.math3.random.RandomGenerator
 
 
 /**
@@ -579,7 +579,7 @@ class EcoCalc extends EcoConstants with UnitConstants {
     * @param stellarMass   mass of the central star in terms of solar mass.
     * @return volatile gas inventory.
     */
-  def vGasInventory(rand: RandGenTrait, mass: Double, zone: Int, doesRetainGas: Boolean, hasGE: Boolean, stellarMass: Double): Double = {
+  def vGasInventory(rand: RandomGenerator, mass: Double, zone: Int, doesRetainGas: Boolean, hasGE: Boolean, stellarMass: Double): Double = {
     if (doesRetainGas) {
       val q = zone match {
         case 1 => 100000.0
@@ -612,7 +612,7 @@ class EcoCalc extends EcoConstants with UnitConstants {
   /*   The orbital radius is expected in units of Astronomical Units (AU).    */
   /*   Inclination is returned in units of degrees.                           */
   /*--------------------------------------------------------------------------*/
-  def inclination(rand: RandGenTrait, orbital_radius: Double): Double = {
+  def inclination(rand: RandomGenerator, orbital_radius: Double): Double = {
     val t = (EARTH_AXIAL_TILT * (rand.nextDouble() * 0.4 - 0.4)) + EARTH_AXIAL_TILT
     (Math.pow(orbital_radius, 0.2) * t) % 360
   }

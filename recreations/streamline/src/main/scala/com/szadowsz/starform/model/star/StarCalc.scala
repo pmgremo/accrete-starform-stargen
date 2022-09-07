@@ -1,7 +1,7 @@
 package com.szadowsz.starform.model.star
 
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.bodies.Star
+import org.apache.commons.math3.random.RandomGenerator
 
 /**
   * @author Zakski : 10/09/2016.
@@ -42,7 +42,7 @@ class StarCalc extends StarConstants {
     * @param lifespan the lifespan the star can expect on the main sequence
     * @return the approximate age of the star in Byr
     */
-  def stellarAge(rand: RandGenTrait, lifespan: Double): Double = {
+  def stellarAge(rand: RandomGenerator, lifespan: Double): Double = {
     if (lifespan >= 6.0) {
       rand.nextDouble() * 5.0 + 1.0
     } else {
@@ -104,7 +104,7 @@ class StarCalc extends StarConstants {
   def greenhouseRadius(ecosphereRadius: Double): Double = ecosphereRadius * GREENHOUSE_EFFECT_CONST
 
 
-  def spectralClass(rand: RandGenTrait): (Char, Int, Double) = {
+  def spectralClass(rand: RandomGenerator): (Char, Int, Double) = {
     val rnd = rand.nextDouble()
     val (specs, mag) = cumulStarCounts.find { case (s, _) => s.exists { case (prob, spec) => prob >= rnd } }.get
     val (_, spec) = specs.find { case (prob, _) => prob >= rnd }.get
@@ -123,7 +123,7 @@ class StarCalc extends StarConstants {
     (lum, luminosityClasses(lumIndex))
   }
 
-  def stellarMass(rand: RandGenTrait, lum: Double, lumClass: String): Double = {
+  def stellarMass(rand: RandomGenerator, lum: Double, lumClass: String): Double = {
     lumClass match {
       case "Ia" | "Ib" | "II" | "III" =>
         /* Supergiants & giants */
@@ -143,7 +143,7 @@ class StarCalc extends StarConstants {
   //    s->r_inner = 0.93 * s->r_ecos;
   //    s->r_outer = 1.1 * s->r_ecos;  /* approximately */
   //  }
-  def initStar(rand: RandGenTrait): Star = {
+  def initStar(rand: RandomGenerator): Star = {
     val (specClass,specSubClass,magnitude) = spectralClass(rand)
     val (luminosity, lumClass) = stellarLuminosity(specClass,magnitude)
     val mass = stellarMass(rand,luminosity,lumClass)

@@ -1,9 +1,9 @@
 package com.szadowsz.starform.model.accrete
 
 import com.szadowsz.starform.model.SimulationStats
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
+import org.apache.commons.math3.random.RandomGenerator
 
 import java.lang.System.Logger.Level.{DEBUG, INFO}
 
@@ -34,7 +34,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   /**
     * The random number generator to use throughout the process.
     */
-  protected val rand: RandGenTrait
+  protected val rand: RandomGenerator
 
   /**
     * the accretion code to use when hoovering up dust.
@@ -452,8 +452,8 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     logger.log(DEBUG, "Initialising Statistics Recorder")
     stats = initStats()
 
-    seedOpt.foreach(s => rand.setSeed(s))
-    val seed = seedOpt.getOrElse(rand.getSeed)
+    val seed = seedOpt.getOrElse(System.currentTimeMillis())
+    rand.setSeed(seed)
     logger.log(DEBUG, "Setting Star System Seed to {0}", seed)
 
     logger.log(INFO, "Beginning Protoplanet Generation for {0}", seed)

@@ -1,13 +1,13 @@
 package com.szadowsz.starform
 
 import com.szadowsz.starform.model.accrete.{AccreteCalc, AccreteSimulation}
-import com.szadowsz.starform.model.{SimConstants, SimulationStats}
 import com.szadowsz.starform.model.eco.EcoCalc
 import com.szadowsz.starform.model.star.StarCalc
-import com.szadowsz.starform.rand.{MersenneTwisterRandGen, RandGenTrait}
+import com.szadowsz.starform.model.{SimConstants, SimulationStats}
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{Planet, Planetismal, Star}
 import com.szadowsz.starform.unit.UnitConverter
+import org.apache.commons.math3.random.{MersenneTwister, RandomGenerator}
 
 /**
   * @author Zakski : 31/12/2015.
@@ -16,7 +16,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
 
   protected var star: Star = _
 
-  protected override val rand: RandGenTrait = new MersenneTwisterRandGen() // TODO double check component is right
+  protected override val rand: RandomGenerator = new MersenneTwister() // TODO double check component is right
 
   /**
     * calculations innately tied to the protoplanets
