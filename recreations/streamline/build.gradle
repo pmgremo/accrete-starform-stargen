@@ -42,6 +42,7 @@ dependencies {
 
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 
-    testImplementation group: 'org.scalatest', name: 'scalatest_2.13', version: scalaTestVersion
-    testImplementation group: 'junit', name: 'junit', version: junitVersion
+    testImplementation group: 'org.scalatest', name: 'scalatest_3', version: scalaTestVersion
+//    testImplementation group: 'junit', name: 'junit', version: junitVersion
+    testRuntimeOnly group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.64.0'
 }

@@ -48,7 +48,7 @@ class BurdickSampleSystemSpec extends AnyFunSpec with Matchers {
       val (equatorialRadius, density) = eCalc.radiusAndDensity(pMass, pAxis, star.meanHabitableRadius, isGasGiant, orbitZone)
 
       val radiusTolerance = expectedEqRadius * tolerancePercentage
-      equatorialRadius should be(expectedEqRadius +- radiusTolerance)
+      assert(equatorialRadius === expectedEqRadius +- radiusTolerance)
 
       val densityTolerance = expectedDensity * tolerancePercentage
       density should be(expectedDensity +- densityTolerance)

@@ -296,7 +296,7 @@ class FoggSampleSystemSpec extends AnyFunSpec with Matchers {
 
   describe("Sample System Planet 7 Calculations") {
     val isGasGiant = true
-   val pMass = UnitConverter.kgToSolarMass(2.31E27)
+    val pMass = UnitConverter.kgToSolarMass(2.31E27)
     val pAxis = 10.34
     val orbitZone = eCalc.orbitalZone(star.luminosity,pAxis)
     val expectedEqRadius = 72400.0
