@@ -1,8 +1,9 @@
 package com.szadowsz.starform.model.star.calc
 
 import com.szadowsz.starform.model.star.constants.FoggBaseStarConst
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.bodies.star.FoggStar
+
+import scala.util.Random
 
 /**
   * Created on 13/04/2017.
@@ -25,7 +26,7 @@ case class FoggStarCalc(override val sConst: FoggBaseStarConst) extends StarCalc
     * @param rand pseudo-random number generator interface
     * @return generated mass in terms of solar mass
     */
-  def stellarMass(rand: RandGenTrait): Double = (sConst.UPPER_SOLAR_MASS - sConst.LOWER_SOLAR_MASS) * rand.nextDouble() + sConst.LOWER_SOLAR_MASS
+  def stellarMass(rand: Random): Double = (sConst.UPPER_SOLAR_MASS - sConst.LOWER_SOLAR_MASS) * rand.nextDouble() + sConst.LOWER_SOLAR_MASS
 
 
   /**
@@ -56,7 +57,7 @@ case class FoggStarCalc(override val sConst: FoggBaseStarConst) extends StarCalc
     }
   }
 
-  override def initStar(rand: RandGenTrait): FoggStar = {
+  override def initStar(rand: Random): FoggStar = {
     val mass: Double = stellarMass(rand)
     val luminosity: Double = stellarLuminosity(mass)
     val lifespan: Double = stellarMSLifespan(mass, luminosity)

@@ -1,7 +1,6 @@
 package com.szadowsz.starform.model.accrete.calc.insert
 
 import com.szadowsz.starform.model.accrete.constants.AccreteConstants
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.bodies.base.DustBand
 
 import scala.util.Random
@@ -37,7 +36,7 @@ class RandInsertStrat(protected override val aConst : AccreteConstants) extends 
     * @param bands   the current state of the accretion disc that the new planetismal will be inserted into.
     * @return the semi major axis of a planetismal orbiting a star in AU.
     */
-  override def semiMajorAxis(rand: RandGenTrait, nucleiCount : Int, innermost: Double, outermost: Double, bands: List[DustBand]): Double = {
+  override def semiMajorAxis(rand: Random, nucleiCount : Int, innermost: Double, outermost: Double, bands: List[DustBand]): Double = {
     innermost + (outermost - innermost) * rand.nextDouble()
   }
  }

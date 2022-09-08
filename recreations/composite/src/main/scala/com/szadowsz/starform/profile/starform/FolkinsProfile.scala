@@ -5,11 +5,12 @@ import com.szadowsz.starform.model.accrete.calc.collision.{CollisionCalc, DoleCo
 import com.szadowsz.starform.model.accrete.calc.insert.{AccreteInsertStrat, FolkinsInsertStrat}
 import com.szadowsz.starform.model.accrete.calc.planet.PlanetesimalCalc
 import com.szadowsz.starform.model.accrete.constants.{AccreteConstants, DoleConstants}
-import com.szadowsz.starform.model.eco.calc.{EcoCalc, FoggEcoCalc}
+import com.szadowsz.starform.model.eco.calc.FoggEcoCalc
 import com.szadowsz.starform.model.star.calc.{FolkinsStarCalc, StarCalc}
 import com.szadowsz.starform.model.star.constants.FolkinsStarConstants
-import com.szadowsz.starform.rand.{JDKRandGen, RandGenTrait}
 import com.szadowsz.starform.system.bodies.star.FolkinsStar
+
+import scala.util.Random
 
 /**
   * Created on 15/04/2017.
@@ -18,11 +19,11 @@ class FolkinsProfile extends StarformProfile[FolkinsStar,FolkinsStarConstants,Fo
 
   override val starConstants : FolkinsStarConstants = new FolkinsStarConstants
 
-  override val rand: RandGenTrait = new JDKRandGen() // TODO double check component is right
+  override val rand: Random = new Random // TODO double check component is right
 
-  override val accConsts: AccreteConstants = new DoleConstants() // TODO double check they are unchanged
+  override val accConsts: AccreteConstants = new DoleConstants // TODO double check they are unchanged
 
-  override def buildEcoCalc(): FoggEcoCalc = new FoggEcoCalc() // TODO double check component is right
+  override def buildEcoCalc(): FoggEcoCalc = new FoggEcoCalc // TODO double check component is right
 
   override def buildStarCalc(sConst : FolkinsStarConstants): StarCalc[FolkinsStar] = FolkinsStarCalc(sConst)
 

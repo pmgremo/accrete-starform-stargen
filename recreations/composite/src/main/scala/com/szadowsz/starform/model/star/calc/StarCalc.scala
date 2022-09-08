@@ -1,8 +1,9 @@
 package com.szadowsz.starform.model.star.calc
 
 import com.szadowsz.starform.model.star.constants.StarConstants
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.bodies.base.Star
+
+import scala.util.Random
 
 /**
   * @author Zakski : 10/09/2016.
@@ -11,7 +12,7 @@ trait StarCalc[S <: Star] {
 
   val sConst : StarConstants
 
-  def initStar(rand : RandGenTrait): S
+  def initStar(rand : Random): S
 
   /**
     * function to randomise the star's age as noted in "3. Characteristics of The Primary Star" in Extra-solar Planetary Systems: A Microcomputer Simulation.
@@ -29,7 +30,7 @@ trait StarCalc[S <: Star] {
     * @param lifespan the lifespan the star can expect on the main sequence
     * @return the approximate age of the star in Byr
     */
-  def stellarAge(rand: RandGenTrait, lifespan: Double): Double = {
+  def stellarAge(rand: Random, lifespan: Double): Double = {
     if (lifespan >= 6.0) {
       rand.nextDouble() * 5.0 + 1.0
     } else {

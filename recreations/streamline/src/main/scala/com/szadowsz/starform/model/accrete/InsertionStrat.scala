@@ -1,7 +1,8 @@
 package com.szadowsz.starform.model.accrete
 
 import com.szadowsz.starform.system.bodies.DustBand
-import org.apache.commons.math3.random.RandomGenerator
+
+import scala.util.Random
 
 object InsertionStrat {
   private val defaultRandomCount: Int = 20
@@ -39,7 +40,7 @@ case class InsertionStrat(aConst : AccreteConstants, randomisedCount: Int = Inse
     * @param bands   the current state of the accretion disc that the new planetismal will be inserted into.
     * @return the semi major axis of a planetismal orbiting a star in AU.
     */
-  protected def semiMajorAxis(rand: RandomGenerator, nucleiCount: Int, innermost: Double, outermost: Double, bands: List[DustBand]): Double = {
+  protected def semiMajorAxis(rand: Random, nucleiCount: Int, innermost: Double, outermost: Double, bands: List[DustBand]): Double = {
     if (randomisedCount >= nucleiCount){
       innermost + (outermost - innermost) * rand.nextDouble()
     } else {
@@ -70,7 +71,7 @@ case class InsertionStrat(aConst : AccreteConstants, randomisedCount: Int = Inse
     * @param rand - a random number generator to supply a value between 0.0 and 1.0
     * @return eccentricity between 0.0 and 1.0, essential for a planetesimal to stay in the system.
     */
-  def eccentricity(rand: RandomGenerator): Double = 1.0 - Math.pow(rand.nextDouble(), aConst.ECCENTRICITY_COEFF)
+  def eccentricity(rand: Random): Double = 1.0 - Math.pow(rand.nextDouble(), aConst.ECCENTRICITY_COEFF)
 
   /**
     * Function to produce the semi major axis of a planetesimal. Formula taken from "Formation of Planetary Systems by Aggregation: A Computer Simulation" in
@@ -94,7 +95,7 @@ case class InsertionStrat(aConst : AccreteConstants, randomisedCount: Int = Inse
     * @param bands the current state of the accretion disc that the new planetismal will be inserted into.
     * @return the semi-major axis of the newly introduced planetismal.
     */
-  def semiMajorAxis(rand: RandomGenerator, nucleiCount : Int, bands: List[DustBand]): Double = {
+  def semiMajorAxis(rand: Random, nucleiCount : Int, bands: List[DustBand]): Double = {
     semiMajorAxis(rand, nucleiCount, aConst.INNERMOST_PLANET,aConst.OUTERMOST_PLANET,bands)
   }
 }

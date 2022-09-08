@@ -5,14 +5,15 @@ import com.szadowsz.starform.model.accrete.calc.collision.{CollisionCalc, DoleCo
 import com.szadowsz.starform.model.accrete.calc.insert.{AccreteInsertStrat, RandInsertStrat}
 import com.szadowsz.starform.model.accrete.calc.planet.PlanetesimalCalc
 import com.szadowsz.starform.model.accrete.constants.{AccreteConstants, FKeris2Constants}
-import com.szadowsz.starform.rand.{JDKRandGen, RandGenTrait}
+
+import scala.util.Random
 
 /**
   * Created on 11/04/2017.
   */
 class FKeris2Profile extends AccreteProfile{
 
-  override val rand: RandGenTrait = new JDKRandGen() // TODO check if this aligns to the c/c++ variant
+  override val rand: Random = new Random // TODO check if this aligns to the c/c++ variant
 
   override val accConsts: AccreteConstants = new FKeris2Constants()
 

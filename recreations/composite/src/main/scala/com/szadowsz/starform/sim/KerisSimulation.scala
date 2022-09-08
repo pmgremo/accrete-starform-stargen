@@ -1,7 +1,7 @@
 package com.szadowsz.starform.sim
 
 import com.szadowsz.starform.model.accrete.AccreteStats
-import com.szadowsz.starform.model.eco.calc.{FoggEcoCalc, KerisEcoCalc}
+import com.szadowsz.starform.model.eco.calc.KerisEcoCalc
 import com.szadowsz.starform.model.star.constants.FoggBaseStarConst
 import com.szadowsz.starform.model.{StarformProfile, StarformSimulation}
 import com.szadowsz.starform.system.StarformSystem

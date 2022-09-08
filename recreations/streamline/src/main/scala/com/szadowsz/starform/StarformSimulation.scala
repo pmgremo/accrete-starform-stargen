@@ -7,7 +7,9 @@ import com.szadowsz.starform.model.{SimConstants, SimulationStats}
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{Planet, Planetismal, Star}
 import com.szadowsz.starform.unit.UnitConverter
-import org.apache.commons.math3.random.{MersenneTwister, RandomGenerator}
+
+import scala.util.Random
+
 
 /**
   * @author Zakski : 31/12/2015.
@@ -16,7 +18,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
 
   protected var star: Star = _
 
-  protected override val rand: RandomGenerator = new MersenneTwister() // TODO double check component is right
+  protected override val rand: Random = Random
 
   /**
     * calculations innately tied to the protoplanets
@@ -32,8 +34,6 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     * the accretion code to use when hoovering up dust.
     */
   protected override lazy val accCalc: AccreteCalc = AccreteCalc(star, pCalc, aConsts)
-
-
 
 
   /**
@@ -56,7 +56,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     planetismals.map(proto => buildEcosphere(proto))
   }
 
-  protected def buildEcosphere(proto: Planetismal): Planet  = {
+  protected def buildEcosphere(proto: Planetismal): Planet = {
     val orbitZone: Int = eCalc.orbitalZone(star.luminosity, proto.axis)
 
     val (eqRadius, density) = eCalc.radiusAndDensity(proto.mass, proto.axis, star.meanHabitableRadius, proto.isGasGiant, orbitZone)
@@ -75,13 +75,13 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
 
     val surfPressure = eCalc.surfacePressure(volatileGasInventory, eqRadius, gravity)
     val atmos = eCalc.atmosphere(orbitZone, surfPressure, suffersFromGE, proto.isGasGiant)
-    val mw = eCalc.molecule_limit(proto.mass,escapeVel,eqRadius)
-    val (water, clouds, ice, albedo, surfTemp) = eCalc.calcClimate(star.meanHabitableRadius,proto.axis, eqRadius, surfPressure, volatileGasInventory, mw, atmos)
+    val mw = eCalc.molecule_limit(proto.mass, escapeVel, eqRadius)
+    val (water, clouds, ice, albedo, surfTemp) = eCalc.calcClimate(star.meanHabitableRadius, proto.axis, eqRadius, surfPressure, volatileGasInventory, mw, atmos)
 
-    val tilt = eCalc.inclination(rand,proto.axis)
-    val (day,night,max,min) = eCalc.calcTempLimits(proto.ecc,surfPressure,surfTemp,tilt,dayLen)
+    val tilt = eCalc.inclination(rand, proto.axis)
+    val (day, night, max, min) = eCalc.calcTempLimits(proto.ecc, surfPressure, surfTemp, tilt, dayLen)
 
-    new Planet(proto, eqRadius, density, lengthOfOrbit, dayLen, gravity, surfPressure, water, clouds, ice, albedo, surfTemp,tilt,day, night, min,max)
+    new Planet(proto, eqRadius, density, lengthOfOrbit, dayLen, gravity, surfPressure, water, clouds, ice, albedo, surfTemp, tilt, day, night, min, max)
   }
 
   /**

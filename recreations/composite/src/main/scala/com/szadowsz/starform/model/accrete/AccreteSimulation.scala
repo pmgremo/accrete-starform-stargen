@@ -6,12 +6,12 @@ import com.szadowsz.starform.model.accrete.calc.collision.CollisionCalc
 import com.szadowsz.starform.model.accrete.calc.insert.AccreteInsertStrat
 import com.szadowsz.starform.model.accrete.calc.planet.PlanetesimalCalc
 import com.szadowsz.starform.model.accrete.constants.AccreteConstants
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.AbstractStarSystem
 import com.szadowsz.starform.system.bodies.base.{DustBand, Planetismal, ProtoPlanet, Star}
 
 import java.lang.System.Logger
 import java.lang.System.Logger.Level.{DEBUG, INFO}
+import scala.util.Random
 
 /**
   * Abstract Simulation Class that attempts to recreated the procedures detailed by Stephen H. Dole in "Formation of Planetary Systems by Aggregation: A
@@ -32,7 +32,7 @@ abstract class AccreteSimulation[S <: Star, R <: SimulationStats[R], P <: Planet
   /**
     * The random number generator to use throughout the process.
     */
-  protected val rand: RandGenTrait = profile.rand
+  protected val rand: Random = profile.rand
 
   protected override val aConsts: AccreteConstants = profile.accConsts
 

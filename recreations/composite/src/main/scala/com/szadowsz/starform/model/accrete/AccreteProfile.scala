@@ -5,14 +5,15 @@ import com.szadowsz.starform.model.accrete.calc.collision.CollisionCalc
 import com.szadowsz.starform.model.accrete.calc.insert.AccreteInsertStrat
 import com.szadowsz.starform.model.accrete.calc.planet.PlanetesimalCalc
 import com.szadowsz.starform.model.accrete.constants.AccreteConstants
-import com.szadowsz.starform.rand.RandGenTrait
+
+import scala.util.Random
 
 /**
   * Created on 11/04/2017.
   */
 trait AccreteProfile {
 
-  val rand: RandGenTrait
+  val rand: Random
 
   val accConsts: AccreteConstants
 

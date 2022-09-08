@@ -1,8 +1,9 @@
 package com.szadowsz.starform.model.star.calc
 
 import com.szadowsz.starform.model.star.constants.FolkinsBaseStarConst
-import com.szadowsz.starform.rand.RandGenTrait
 import com.szadowsz.starform.system.bodies.star.FolkinsStar
+
+import scala.util.Random
 
 /**
   * Created on 13/04/2017.
@@ -26,7 +27,7 @@ case class FolkinsStarCalc(override val sConst : FolkinsBaseStarConst) extends S
     ).zipWithIndex
   }
 
-  def spectralClass(rand: RandGenTrait): (Char, Int, Double) = {
+  def spectralClass(rand: Random): (Char, Int, Double) = {
     val rnd = rand.nextDouble()
     val (specs, mag) = cumulStarCounts.find { case (s, _) => s.exists { case (prob, spec) => prob >= rnd } }.get
     val (_, spec) = specs.find { case (prob, spec) => prob >= rnd }.get
@@ -45,7 +46,7 @@ case class FolkinsStarCalc(override val sConst : FolkinsBaseStarConst) extends S
     (lum, sConst.luminosityClasses(lumIndex))
   }
 
-  def stellarMass(rand: RandGenTrait, lum: Double, lumClass: String): Double = {
+  def stellarMass(rand: Random, lum: Double, lumClass: String): Double = {
     lumClass match {
       case "Ia" | "Ib" | "II" | "III" =>
         /* Supergiants & giants */
@@ -65,7 +66,7 @@ case class FolkinsStarCalc(override val sConst : FolkinsBaseStarConst) extends S
   //    s->r_inner = 0.93 * s->r_ecos;
   //    s->r_outer = 1.1 * s->r_ecos;  /* approximately */
   //  }
-  override def initStar(rand: RandGenTrait): FolkinsStar = {
+  override def initStar(rand: Random): FolkinsStar = {
     val (specClass,specSubClass,magnitude) = spectralClass(rand)
     val (luminosity, lumClass) = stellarLuminosity(specClass,magnitude)
     val mass = stellarMass(rand,luminosity,lumClass)
