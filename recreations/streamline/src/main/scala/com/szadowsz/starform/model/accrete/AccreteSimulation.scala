@@ -117,29 +117,24 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param bands the current band list.
     * @return the new calculated mass
     */
-  final protected def accreteDust(proto: ProtoPlanet, bands: List[DustBand]): Double = {
-    val innerSweep = if (proto.innerBandLimit < 0.0) 0.0 else proto.innerBandLimit
+  final protected def accreteDust(bands: List[DustBand], proto: ProtoPlanet): Double = {
+    val innerSweep = Math.max(proto.innerBandLimit, 0.0)
     val outerSweep = proto.outerBandLimit
 
-    bands match {
-      case band :: tail =>
-        if (band.outerEdge <= innerSweep) {
-          accreteDust(proto, tail)
-        } else if (band.innerEdge >= outerSweep) {
-          0.0
-        } else {
-          var density: Double = if (band.hasDust) accCalc.dustDensity(proto.axis) else 0.0
+    bands.foldLeft(0.0)((seed, x) => {
+      if (x.outerEdge <= innerSweep || x.innerEdge >= outerSweep) {
+        seed
+      } else {
+        var density = if (x.hasDust) accCalc.dustDensity(proto.axis) else 0.0
 
-          if (band.hasGas && proto.isGasGiant) {
-            density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
-          }
-
-          val volume = accCalc.bandVolume(proto.mass, proto.axis, proto.ecc, innerSweep, outerSweep, band.innerEdge, band.outerEdge)
-          // volume X density = mass
-          volume * density + accreteDust(proto, tail)
+        if (x.hasGas && proto.isGasGiant) {
+          density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
         }
-      case Nil => 0.0
-    }
+
+        val volume = accCalc.bandVolume(proto.mass, proto.axis, proto.ecc, innerSweep, outerSweep, x.innerEdge, x.outerEdge)
+        seed + volume * density
+      }
+    })
   }
 
   /**
@@ -159,7 +154,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     var lastMass: Double = 0.0
     while ( {
       lastMass = proto.mass
-      val currMass = accreteDust(proto, dust)
+      val currMass = accreteDust(dust, proto)
       proto.mass = if (currMass > lastMass) currMass else lastMass
       accCalc.shouldAccreteContinue(lastMass, proto.mass)
     }) ()
@@ -252,13 +247,10 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   final protected def splitBands(proto: ProtoPlanet, band: DustBand, retainGas: Boolean): List[DustBand] = {
     if (band.innerEdge < proto.innerBandLimit && band.outerEdge > proto.outerBandLimit) {
       splitForSubPlanet(proto, band, retainGas)
-
     } else if (band.innerEdge < proto.outerBandLimit && band.outerEdge > proto.outerBandLimit) {
       splitOnPlanetMaxEdge(proto, band, retainGas)
-
     } else if (band.innerEdge < proto.innerBandLimit && band.outerEdge > proto.innerBandLimit) {
       splitOnPlanetMinEdge(proto, band, retainGas)
-
     } else if (band.innerEdge >= proto.innerBandLimit && band.outerEdge <= proto.outerBandLimit) {
       List(DustBand(band.innerEdge, band.outerEdge, hasDust = false, hasGas = if (band.hasGas) retainGas else false))
     } else {
@@ -275,20 +267,17 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
     * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
     * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
-    * @param head the current dust band we are trying to merge.
-    * @param tail the remaining un merged dust bands.
+    * @param xs un merged dust bands.
     * @return the updated dust band list.
     */
-  final protected def mergeDustBands(head: DustBand, tail: List[DustBand]): List[DustBand] = {
-    tail match {
-      case Nil => List(head)
-
-      case other :: ntail if head.canMerge(other) =>
-        val nHead = DustBand(head.innerEdge, other.outerEdge, head.hasDust, head.hasGas)
-        mergeDustBands(nHead, ntail)
-
-      case nHead :: ntail =>
-        List(head) ++ mergeDustBands(nHead, ntail)
+  def merge(xs: List[DustBand]): List[DustBand] = {
+    xs match {
+      case Nil => Nil
+      case _ :: Nil => xs
+      case head :: next :: tail if head.canMerge(next) =>
+        merge(DustBand(head.innerEdge, next.outerEdge, head.hasDust, head.hasGas) :: tail)
+      case head :: tail =>
+        head :: merge(tail)
     }
   }
 
@@ -309,7 +298,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     logger.log(DEBUG, "Updating Dust Lanes")
     val retainGas: Boolean = !proto.isGasGiant // done here to save recalculating if the planet is a gas giant a bunch of times.
     dust = dust.flatMap(d => splitBands(proto, d, retainGas))
-    dust = mergeDustBands(dust.head, dust.tail)
+    dust = merge(dust)
   }
 
   /**
