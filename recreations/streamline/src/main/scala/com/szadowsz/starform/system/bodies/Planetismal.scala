@@ -14,7 +14,6 @@ import scala.collection.mutable
   * @see struct dust_record, line 39 in structs.h - Keris (starform)
   * @see struct planets_record, line 4 in structs.h - Mat Burdick (starform)
   * @see Protoplanet.java - Carl Burke (starform)
-  *
   * @author Zakski : 25/06/2015.
   */
 trait Planetismal {
@@ -64,7 +63,7 @@ trait Planetismal {
 
   override def equals(obj: Any): Boolean = {
     obj match {
-      case p : Planetismal =>
+      case p: Planetismal =>
         mass == p.mass && ecc == p.ecc && axis == p.axis && isGasGiant == p.isGasGiant
       case _ => false
     }

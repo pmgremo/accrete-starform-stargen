@@ -53,11 +53,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   protected var dust: List[DustBand] = _
 
   /**
-    * Current list of coalesced proto-planets in the system.
-    */
-  protected var planetismals: List[ProtoPlanet] = List()
-
-  /**
     * Function to initialise a new instance at the beginning of each run.
     *
     * @return a new [[SimulationStats]] instance.
@@ -160,7 +155,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method accrete_dust, line 190 in  DustDisc.java - Carl Burke (starform)
     * @param proto newly coalesced proto-planet
     */
-  final protected def accreteDust(proto: ProtoPlanet): Unit = {
+  final protected def accreteDust(proto: ProtoPlanet): ProtoPlanet = {
     var lastMass: Double = 0.0
     while ( {
       lastMass = proto.mass
@@ -168,6 +163,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       proto.mass = if (currMass > lastMass) currMass else lastMass
       accCalc.shouldAccreteContinue(lastMass, proto.mass)
     }) ()
+    proto
   }
 
   /**
@@ -317,26 +313,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   }
 
   /**
-    * Function to add a newly coalesced planet to the list of protoplanets in the system.
-    *
-    * @see method InsertPlanet, line 351 in Accrete.java - Ian Burrell (accrete)
-    * @see method coalesce_planetesimals, line 290 in accrete.c - Mat Burdick (accrete)
-    * @see method CreatePlanet, line 136 in Dole.c - Andrew Folkins (accretion)
-    * @see method AddPlanet, line 170 in dole.c - Keris (accretion v1)
-    * @see method AddPlanet, line 265 in dole.cc - Keris (accretion v2)
-    * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
-    * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
-    * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    * @param proto the new protoplanet to add to the list of protoplanets.
-    */
-  final protected def insertPlanet(proto: ProtoPlanet): Unit = {
-    stats = stats.acceptNuclei
-    planetismals = (proto +: planetismals).sortBy(_.axis)
-    logger.log(INFO, "Injecting protoplanet at {0} AU Successful.", proto.axis)
-
-  }
-
-  /**
     * Function to merge a newly coalesced planet with an existing one.
     *
     * @see method CoalesceTwoPlanets, line 331 in Accrete.java - Ian Burrell (accrete)
@@ -350,44 +326,25 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param planet   the existing planet
     * @param newcomer the new planet
     */
-  final protected def mergeTwoPlanets(planet: ProtoPlanet, newcomer: ProtoPlanet): Unit = {
+  final protected def mergeTwoPlanets(planet: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
     val new_mass: Double = planet.mass + newcomer.mass
     val new_axis: Double = colCalc.coalesceAxis(planet.mass, planet.axis, newcomer.mass, newcomer.axis)
     val new_ecc: Double = colCalc.coalesceEccentricity(planet.mass, planet.axis, planet.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
-    planet.axis = new_axis
-    planet.ecc = new_ecc
-    planet.mass = new_mass
-
-    accreteDust(planet)
-    updateDustLanes(planet)
+    val result = accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
+    updateDustLanes(result)
+    result
   }
 
-  /**
-    * Function to check for collisions between planets and merge them
-    *
-    * @see method CoalescePlanetismals, line 304 in Accrete.java - Ian Burrell (accrete)
-    * @see method coalesce_planetesimals, line 290 in accrete.c - Mat Burdick (accrete)
-    * @see method CheckCoalesence, line 426 in Dole.c - Andrew Folkins (accretion)
-    * @see method CheckCoalesence, line 519 in dole.c - Keris (accretion v1)
-    * @see method CheckCoalesence, line 617 in dole.cc - Keris (accretion v2)
-    * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
-    * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
-    * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    * @param newcomer the new plantismal
-    * @return true if the newcomer collided with an existing planet, false if not
-    */
-  final protected def coalescePlanetesimals(newcomer: ProtoPlanet): Boolean = {
-    logger.log(DEBUG, "Checking for collisions.")
-    val result = planetismals.find(p => (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
-      (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis)))
+  private def coalesce(existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
+    logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
+    stats = stats.mergeNuclei
+    mergeTwoPlanets(existing, newcomer)
+  }
 
-    result.foreach { existing =>
-      logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
-      stats = stats.mergeNuclei
-      mergeTwoPlanets(existing, newcomer)
-    }
-    result.isDefined
+  private def toClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
+    (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
+      (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis))
   }
 
   /**
@@ -402,9 +359,9 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method dist_planetary_masses, line 392 in accrete.c - Mat Burdick (starform)
     * @see method dist_planetary_masses, line 145 in  Protosystem.java - Carl Burke (starform)
     */
-  final protected def accrete(): Unit = {
+  final protected def accrete(): List[ProtoPlanet] = {
     logger.log(DEBUG, "Initialising Statistics Recorder")
-    planetismals = Nil
+    var planetismals: List[ProtoPlanet] = Nil
     dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
 
     while (isDustAvailable(aConsts.INNERMOST_PLANET, aConsts.OUTERMOST_PLANET)) {
@@ -421,17 +378,21 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
         updateDustLanes(proto)
 
         if (proto.mass > aConsts.PROTOPLANET_MASS) {
-          if (!coalescePlanetesimals(proto)) {
-            insertPlanet(proto)
-          }
+          logger.log(DEBUG, "Checking for collisions.")
+          planetismals = inject(planetismals, proto).sortWith(_.axis < _.axis)
         } else {
-          // TODO check if this if/else is needed
           logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
         }
       } else {
         logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to no available dust.", proto.axis)
       }
     }
+    planetismals
+  }
+
+  def inject(xs: List[ProtoPlanet], x: ProtoPlanet): List[ProtoPlanet] = xs match {
+    case Nil => List(x)
+    case h :: t => if (toClose(h, x)) coalesce(h, x) :: t else h :: inject(t, x)
   }
 
   /**

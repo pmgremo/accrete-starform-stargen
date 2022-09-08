@@ -52,8 +52,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
   final protected def generatePlanets(): List[Planet] = {
     star = sCalc.initStar(rand)
     pCalc.setStar(star)
-    accrete()
-    planetismals.map(proto => buildEcosphere(proto))
+    accrete().map(proto => buildEcosphere(proto))
   }
 
   protected def buildEcosphere(proto: Planetismal): Planet = {
