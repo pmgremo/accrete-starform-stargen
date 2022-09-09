@@ -301,34 +301,16 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     dust = merge(dust)
   }
 
-  /**
-    * Function to merge a newly coalesced planet with an existing one.
-    *
-    * @see method CoalesceTwoPlanets, line 331 in Accrete.java - Ian Burrell (accrete)
-    * @see method coalesce_planetesimals, line 290 in accrete.c - Mat Burdick (accrete)
-    * @see method MergePlanets, line 409 in Dole.c - Andrew Folkins (accretion)
-    * @see method MergePlanets, line 492 in dole.c - Keris (accretion v1)
-    * @see method MergePlanets, line 586 in dole.cc - Keris (accretion v2)
-    * @see method coalesce_planetesimals, line 316 in accrete.c - Keris (starform)
-    * @see method coalesce_planetesimals, line 289 in accrete.c - Mat Burdick (starform)
-    * @see method coalesce_planetesimals, line 53 in  Protosystem.java - Carl Burke (starform)
-    * @param planet   the existing planet
-    * @param newcomer the new planet
-    */
-  final protected def mergeTwoPlanets(planet: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
-    val new_mass: Double = planet.mass + newcomer.mass
-    val new_axis: Double = colCalc.coalesceAxis(planet.mass, planet.axis, newcomer.mass, newcomer.axis)
-    val new_ecc: Double = colCalc.coalesceEccentricity(planet.mass, planet.axis, planet.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
+  private def coalesce(existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
+    logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
+    stats = stats.mergeNuclei
+    val new_mass: Double = existing.mass + newcomer.mass
+    val new_axis: Double = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
+    val new_ecc: Double = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
     val result = accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
     updateDustLanes(result)
     result
-  }
-
-  private def coalesce(existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
-    logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
-    stats = stats.mergeNuclei
-    mergeTwoPlanets(existing, newcomer)
   }
 
   private def toClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
@@ -368,7 +350,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
 
         if (proto.mass > aConsts.PROTOPLANET_MASS) {
           logger.log(DEBUG, "Checking for collisions.")
-          planetismals = inject(planetismals, proto).sortWith(_.axis < _.axis)
+          planetismals = inject(planetismals, proto, toClose, coalesce).sortWith(_.axis < _.axis)
         } else {
           logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
         }
@@ -379,9 +361,9 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     planetismals
   }
 
-  def inject(xs: List[ProtoPlanet], x: ProtoPlanet): List[ProtoPlanet] = xs match {
+  def inject[T](xs: List[T], x: T, compare: (T, T) => Boolean, merge: (T, T) => T): List[T] = xs match {
     case Nil => List(x)
-    case h :: t => if (toClose(h, x)) coalesce(h, x) :: t else h :: inject(t, x)
+    case h :: t => if (compare(h, x)) merge(h, x) :: t else h :: inject(t, x, compare, merge)
   }
 
   /**
