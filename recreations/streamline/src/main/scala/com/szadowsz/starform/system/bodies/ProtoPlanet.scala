@@ -59,7 +59,7 @@ class ProtoPlanet(val calc: PlanetesimalCalc, var mass: Double, var axis: Double
     *
     * @note unit of value is AU.
     */
-  def innerBandLimit: Double = calc.innerBandLimit(innerGravLimit)
+  def innerLimit: Double = calc.innerBandLimit(innerGravLimit)
 
   /**
     * The furthest from the star that the planet will accrete mass from, given gravitational pull and
@@ -67,7 +67,7 @@ class ProtoPlanet(val calc: PlanetesimalCalc, var mass: Double, var axis: Double
     *
     * @note unit of value is AU.
     */
-  def outerBandLimit: Double = calc.outerBandLimit(outerGravLimit)
+  def outerLimit: Double = calc.outerBandLimit(outerGravLimit)
 
   /**
     * the limit at which a proto planet has gained enough mass to accrete gas as well as dust

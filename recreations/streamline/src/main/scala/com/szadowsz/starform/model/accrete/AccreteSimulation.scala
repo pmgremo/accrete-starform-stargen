@@ -118,8 +118,8 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return the new calculated mass
     */
   final protected def accreteDust(bands: List[DustBand], proto: ProtoPlanet): Double = {
-    val innerSweep = Math.max(proto.innerBandLimit, 0.0)
-    val outerSweep = proto.outerBandLimit
+    val innerSweep = Math.max(proto.innerLimit, 0.0)
+    val outerSweep = proto.outerLimit
 
     bands.foldLeft(0.0)((seed, x) => {
       if (x.outerEdge <= innerSweep || x.innerEdge >= outerSweep) {
@@ -162,103 +162,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   }
 
   /**
-    * Function to split a band into 3 based on a subsumed proto-planet
-    *
-    * @see method UpdateDustLanes, line 217 in Accrete.java - Ian Burrell (accrete)
-    * @see method update_dust_lanes, line 96 in accrete.c - Mat Burdick (accrete)
-    * @see method update_bands, line 305 in Dole.c - Andrew Folkins (accretion)
-    * @see method update_bands, line 367 in dole.c - Keris (accretion v1)
-    * @see method update_bands, line 460 in dole.cc - Keris (accretion v2)
-    * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
-    * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
-    * @see method splitband, line 83 in  DustDisc.java - Carl Burke (starform)
-    * @param proto  newly coalesced proto-planet
-    * @param band   the band to split
-    * @param hasGas whether there is gas
-    * @return the split bands
-    */
-  final protected def splitForSubPlanet(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
-    val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
-    val middle: DustBand = DustBand(proto.innerBandLimit, proto.outerBandLimit, hasDust = false, hasGas = band.hasGas && hasGas)
-    val right: DustBand = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
-    List(left, middle, right)
-  }
-
-  /**
-    * Function to split a band into 2 based on overlapping a proto-planet's outer edge
-    *
-    * @see method UpdateDustLanes, line 217 in Accrete.java - Ian Burrell (accrete)
-    * @see method update_dust_lanes, line 96 in accrete.c - Mat Burdick (accrete)
-    * @see method update_bands, line 305 in Dole.c - Andrew Folkins (accretion)
-    * @see method update_bands, line 367 in dole.c - Keris (accretion v1)
-    * @see method update_bands, line 460 in dole.cc - Keris (accretion v2)
-    * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
-    * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
-    * @see method splithigh, line 105 in  DustDisc.java - Carl Burke (starform)
-    * @param proto  newly coalesced proto-planet
-    * @param band   the band to split
-    * @param hasGas whether there is gas
-    * @return the split bands
-    */
-  final protected def splitOnPlanetMaxEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
-    val right = DustBand(proto.outerBandLimit, band.outerEdge, band.hasDust, band.hasGas)
-    val left = DustBand(band.innerEdge, proto.outerBandLimit, hasDust = false, hasGas = hasGas)
-    List(left, right)
-  }
-
-  /**
-    * Function to split a band into 2 based on overlapping a proto-planet's inner edge
-    *
-    * @see method UpdateDustLanes, line 217 in Accrete.java - Ian Burrell (accrete)
-    * @see method update_dust_lanes, line 96 in accrete.c - Mat Burdick (accrete)
-    * @see method update_bands, line 305 in Dole.c - Andrew Folkins (accretion)
-    * @see method update_bands, line 367 in dole.c - Keris (accretion v1)
-    * @see method update_bands, line 460 in dole.cc - Keris (accretion v2)
-    * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
-    * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
-    * @see method splitlow, line 123 in  DustDisc.java - Carl Burke (starform)
-    * @param proto  newly coalesced proto-planet
-    * @param band   the band to split
-    * @param hasGas whether there is gas
-    * @return the split bands
-    */
-  final protected def splitOnPlanetMinEdge(proto: ProtoPlanet, band: DustBand, hasGas: Boolean): List[DustBand] = {
-    val right = DustBand(proto.innerBandLimit, band.outerEdge, hasDust = false, hasGas = band.hasGas && hasGas)
-    val left = DustBand(band.innerEdge, proto.innerBandLimit, band.hasDust, band.hasGas)
-    List(left, right)
-  }
-
-  /**
-    * Split a dust lane into several dust lanes, and mark the dust as used. Returns the next dust lane in the list.
-    *
-    * @see method UpdateDustLanes, line 217 in Accrete.java - Ian Burrell (accrete)
-    * @see method update_dust_lanes, line 96 in accrete.c - Mat Burdick (accrete)
-    * @see method update_bands, line 305 in Dole.c - Andrew Folkins (accretion)
-    * @see method update_bands, line 367 in dole.c - Keris (accretion v1)
-    * @see method update_bands, line 460 in dole.cc - Keris (accretion v2)
-    * @see method update_dust_lanes, line 120 in accrete.c - Keris (starform)
-    * @see method update_dust_lanes, line 95 in accrete.c - Mat Burdick (starform)
-    * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
-    * @param proto     newly coalesced proto-planet
-    * @param band      current dust band we are examining
-    * @param retainGas if the dust stripped bands will also retain gas.
-    * @return a list of bands created from the examined band.
-    */
-  final protected def splitBands(proto: ProtoPlanet, band: DustBand, retainGas: Boolean): List[DustBand] = {
-    if (band.innerEdge < proto.innerBandLimit && band.outerEdge > proto.outerBandLimit) {
-      splitForSubPlanet(proto, band, retainGas)
-    } else if (band.innerEdge < proto.outerBandLimit && band.outerEdge > proto.outerBandLimit) {
-      splitOnPlanetMaxEdge(proto, band, retainGas)
-    } else if (band.innerEdge < proto.innerBandLimit && band.outerEdge > proto.innerBandLimit) {
-      splitOnPlanetMinEdge(proto, band, retainGas)
-    } else if (band.innerEdge >= proto.innerBandLimit && band.outerEdge <= proto.outerBandLimit) {
-      List(DustBand(band.innerEdge, band.outerEdge, hasDust = false, hasGas = if (band.hasGas) retainGas else false))
-    } else {
-      List(band)
-    }
-  }
-
-  /**
     * Function merges neighbouring dust lanes that have the same characteristics after an inserted planet has accreted dust/gas.
     *
     * @note Folkins' code line does not merge bands.
@@ -281,6 +184,20 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     }
   }
 
+  def split(ds: List[DustBand], p: ProtoPlanet, retainGas: Boolean): List[DustBand] = {
+    ds match {
+      case Nil => Nil
+      case h :: t if p.innerLimit > h.outerEdge || p.outerLimit < h.innerEdge =>
+        h :: split(t, p, retainGas)
+      case h :: t if p.innerLimit > h.innerEdge =>
+        DustBand(h.innerEdge, p.innerLimit, h.hasDust, h.hasGas) :: split(DustBand(p.innerLimit, h.outerEdge, h.hasDust, h.hasGas) :: t, p, retainGas)
+      case h :: t if p.outerLimit < h.outerEdge =>
+        DustBand(h.innerEdge, p.outerLimit, false, hasGas = h.hasGas && retainGas) :: DustBand(p.outerLimit, h.outerEdge, h.hasDust, h.hasGas) :: t
+      case h :: t =>
+        DustBand(h.innerEdge, h.outerEdge, false, hasGas = h.hasGas && retainGas) :: split(t, p, retainGas)
+    }
+  }
+
   /**
     * Function to Update (Split/Merge) dust bands after an inserted planet has accreted dust/gas.
     *
@@ -297,7 +214,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   final protected def updateDustLanes(proto: ProtoPlanet): Unit = {
     logger.log(DEBUG, "Updating Dust Lanes")
     val retainGas: Boolean = !proto.isGasGiant // done here to save recalculating if the planet is a gas giant a bunch of times.
-    dust = dust.flatMap(d => splitBands(proto, d, retainGas))
+    dust = split(dust, proto, retainGas)
     dust = merge(dust)
   }
 
@@ -316,6 +233,11 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   private def toClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
     (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
       (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis))
+  }
+
+  def inject[T](xs: List[T], x: T, compare: (T, T) => Boolean, merge: (T, T) => T): List[T] = xs match {
+    case Nil => List(x)
+    case h :: t => if (compare(h, x)) merge(h, x) :: t else h :: inject(t, x, compare, merge)
   }
 
   /**
@@ -342,7 +264,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       stats = stats.injectNuclei
       logger.log(DEBUG, "Checking {0} AU for suitability.", proto.axis)
 
-      if (isDustAvailable(proto.innerBandLimit, proto.outerBandLimit)) {
+      if (isDustAvailable(proto.innerLimit, proto.outerLimit)) {
         logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
 
         accreteDust(proto)
@@ -359,11 +281,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       }
     }
     planetismals
-  }
-
-  def inject[T](xs: List[T], x: T, compare: (T, T) => Boolean, merge: (T, T) => T): List[T] = xs match {
-    case Nil => List(x)
-    case h :: t => if (compare(h, x)) merge(h, x) :: t else h :: inject(t, x, compare, merge)
   }
 
   /**
