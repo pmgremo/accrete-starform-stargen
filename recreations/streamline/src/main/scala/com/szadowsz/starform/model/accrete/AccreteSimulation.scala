@@ -121,20 +121,14 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     val innerSweep = Math.max(proto.innerLimit, 0.0)
     val outerSweep = proto.outerLimit
 
-    bands.foldLeft(0.0)((seed, x) => {
-      if (x.outerEdge <= innerSweep || x.innerEdge >= outerSweep) {
-        seed
-      } else {
+    bands
+      .filter(x => !(x.outerEdge <= innerSweep || x.innerEdge >= outerSweep))
+      .map(x => {
         var density = if (x.hasDust) accCalc.dustDensity(proto.axis) else 0.0
-
-        if (x.hasGas && proto.isGasGiant) {
-          density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
-        }
-
-        val volume = accCalc.bandVolume(proto.mass, proto.axis, proto.ecc, innerSweep, outerSweep, x.innerEdge, x.outerEdge)
-        seed + volume * density
-      }
-    })
+        if (x.hasGas && proto.isGasGiant) density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
+        density * accCalc.bandVolume(proto.mass, proto.axis, proto.ecc, innerSweep, outerSweep, x.innerEdge, x.outerEdge)
+      })
+      .sum
   }
 
   /**
@@ -177,10 +171,10 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     xs match {
       case Nil => Nil
       case _ :: Nil => xs
-      case head :: next :: tail if head.canMerge(next) =>
-        merge(DustBand(head.innerEdge, next.outerEdge, head.hasDust, head.hasGas) :: tail)
-      case head :: tail =>
-        head :: merge(tail)
+      case f :: s :: r if f.canMerge(s) =>
+        merge(DustBand(f.innerEdge, s.outerEdge, f.hasDust, f.hasGas) :: r)
+      case h :: t =>
+        h :: merge(t)
     }
   }
 
@@ -213,8 +207,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     */
   final protected def updateDustLanes(proto: ProtoPlanet): Unit = {
     logger.log(DEBUG, "Updating Dust Lanes")
-    val retainGas: Boolean = !proto.isGasGiant // done here to save recalculating if the planet is a gas giant a bunch of times.
-    dust = split(dust, proto, retainGas)
+    dust = split(dust, proto, !proto.isGasGiant)
     dust = merge(dust)
   }
 

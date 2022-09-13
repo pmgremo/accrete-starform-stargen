@@ -12,7 +12,7 @@ import scala.util.Random
 class AccreteSpec extends AnyFunSpec with Matchers {
 
   describe("planets should be predictable") {
-    val seed = 1_662_642_772_940L
+    val seed: Long = 0x0000_0018_31D3_B5BCC
     val rand = new Random(seed)
     val star = new StarCalc().initStar(rand)
     val constants = SimConstants(None, None, None, None, None)
@@ -38,9 +38,11 @@ class AccreteSpec extends AnyFunSpec with Matchers {
     val system = starform.generateSystem(Some(seed))
     expected.zip(system.planets).foreach {
       case (e, a) =>
-        e.axis should be(a.axis)
-        e.mass should be(a.mass)
-        e.ecc should be(a.ecc)
+        it("should match") {
+          e.axis should be(a.axis)
+          e.mass should be(a.mass)
+          e.ecc should be(a.ecc)
+        }
     }
   }
 }
