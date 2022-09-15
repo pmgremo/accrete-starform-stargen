@@ -4,6 +4,7 @@ import com.szadowsz.starform.model.SimulationStats
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
 
+import java.lang.Math.*
 import java.lang.System.Logger.Level.{DEBUG, INFO}
 import scala.util.Random
 
@@ -118,11 +119,11 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return the new calculated mass
     */
   final protected def accreteDust(bands: List[DustBand], proto: ProtoPlanet): Double = {
-    val innerSweep = Math.max(proto.innerLimit, 0.0)
+    val innerSweep = max(proto.innerLimit, 0.0)
     val outerSweep = proto.outerLimit
 
     bands
-      .filter(x => !(x.outerEdge <= innerSweep || x.innerEdge >= outerSweep))
+      .filter(x => x.outerEdge > innerSweep && x.innerEdge < outerSweep)
       .map(x => {
         var density = if (x.hasDust) accCalc.dustDensity(proto.axis) else 0.0
         if (x.hasGas && proto.isGasGiant) density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
@@ -145,12 +146,11 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param proto newly coalesced proto-planet
     */
   final protected def accreteDust(proto: ProtoPlanet): ProtoPlanet = {
-    var lastMass: Double = 0.0
     while ( {
-      lastMass = proto.mass
-      val currMass = accreteDust(dust, proto)
-      proto.mass = if (currMass > lastMass) currMass else lastMass
-      accCalc.shouldAccreteContinue(lastMass, proto.mass)
+      val lastMass = proto.mass
+      val nextMass = accreteDust(dust, proto)
+      proto.mass = max(nextMass, lastMass)
+      accCalc.shouldAccreteContinue(lastMass, nextMass)
     }) ()
     proto
   }
@@ -253,22 +253,17 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       val ecc = iStrat.eccentricity(rand)
       val proto = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
       stats = stats.injectNuclei
-      logger.log(DEBUG, "Checking {0} AU for suitability.", proto.axis)
 
-      if (isDustAvailable(proto.innerLimit, proto.outerLimit)) {
-        logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
+      logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
 
-        accreteDust(proto)
+      accreteDust(proto)
 
-        if (proto.mass > aConsts.PROTOPLANET_MASS) {
-          logger.log(DEBUG, "Checking for collisions.")
-          planetismals = inject(planetismals, proto, toClose, coalesce).sortWith(_.axis < _.axis)
-          updateDustLanes(proto)
-        } else {
-          logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
-        }
+      if (proto.mass > aConsts.PROTOPLANET_MASS) {
+        logger.log(DEBUG, "Checking for collisions.")
+        planetismals = inject(planetismals, proto, toClose, coalesce).sortWith(_.axis < _.axis)
+        updateDustLanes(proto)
       } else {
-        logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to no available dust.", proto.axis)
+        logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
       }
     }
     planetismals
