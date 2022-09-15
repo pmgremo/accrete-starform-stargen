@@ -38,7 +38,7 @@ class AccreteSpec extends AnyFunSpec with Matchers {
     val system = starform.generateSystem(Some(seed))
     expected.zip(system.planets).foreach {
       case (e, a) =>
-        it("should match") {
+        it(s"$a should match $e") {
           e.axis should be(a.axis)
           e.mass should be(a.mass)
           e.ecc should be(a.ecc)

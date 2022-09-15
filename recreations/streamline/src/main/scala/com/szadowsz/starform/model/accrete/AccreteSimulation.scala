@@ -218,9 +218,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     val new_axis: Double = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
     val new_ecc: Double = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
-    val result = accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
-    updateDustLanes(result)
-    result
+    accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
   }
 
   private def toClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
@@ -253,7 +251,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     while (isDustAvailable(aConsts.INNERMOST_PLANET, aConsts.OUTERMOST_PLANET)) {
       val axis = iStrat.semiMajorAxis(rand, stats.injectedNuclei, dust)
       val ecc = iStrat.eccentricity(rand)
-      val proto: ProtoPlanet = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
+      val proto = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
       stats = stats.injectNuclei
       logger.log(DEBUG, "Checking {0} AU for suitability.", proto.axis)
 
@@ -261,11 +259,11 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
         logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
 
         accreteDust(proto)
-        updateDustLanes(proto)
 
         if (proto.mass > aConsts.PROTOPLANET_MASS) {
           logger.log(DEBUG, "Checking for collisions.")
           planetismals = inject(planetismals, proto, toClose, coalesce).sortWith(_.axis < _.axis)
+          updateDustLanes(proto)
         } else {
           logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
         }
