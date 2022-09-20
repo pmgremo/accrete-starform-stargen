@@ -18,8 +18,6 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
 
   protected var star: Star = _
 
-  protected override val rand: Random = Random
-
   /**
     * calculations innately tied to the protoplanets
     */
@@ -49,13 +47,13 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     *
     * @return a new list of [[Planetismal]] instances.
     */
-  final protected def generatePlanets(): List[Planet] = {
+  final protected def generatePlanets()(using rand: Random): List[Planet] = {
     star = sCalc.initStar(rand)
     pCalc.setStar(star)
-    accrete().map(proto => buildEcosphere(proto))
+    accrete.map(proto => buildEcosphere(proto))
   }
 
-  protected def buildEcosphere(proto: Planetismal): Planet = {
+  protected def buildEcosphere(proto: Planetismal)(using rand: Random): Planet = {
     val orbitZone: Int = eCalc.orbitalZone(star.luminosity, proto.axis)
 
     val (eqRadius, density) = eCalc.radiusAndDensity(proto.mass, proto.axis, star.meanHabitableRadius, proto.isGasGiant, orbitZone)

@@ -34,11 +34,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   protected lazy val colCalc: CollisionCalc = CollisionCalc(pCalc)
 
   /**
-    * The random number generator to use throughout the process.
-    */
-  protected val rand: Random
-
-  /**
     * the accretion code to use when hoovering up dust.
     */
   protected def accCalc: AccreteCalc
@@ -67,7 +62,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     *
     * @return a new list of [[Planet]] instances.
     */
-  protected def generatePlanets(): List[Planet]
+  protected def generatePlanets()(using rand: Random): List[Planet]
 
   /**
     * Function to initialise a new solar system instance at the end of each run.
@@ -225,11 +220,11 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
   }
 
-  private def toClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
+  private def tooClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
     (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
       (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis))
   }
-  
+
   /**
     * Function to form protoplanets by accretion. Main accretion loop.
     *
@@ -242,14 +237,14 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method dist_planetary_masses, line 392 in accrete.c - Mat Burdick (starform)
     * @see method dist_planetary_masses, line 145 in  Protosystem.java - Carl Burke (starform)
     */
-  final protected def accrete(): List[ProtoPlanet] = {
+  final protected def accrete(using rand: Random): List[ProtoPlanet] = {
     logger.log(DEBUG, "Initialising Statistics Recorder")
     var planetismals: List[ProtoPlanet] = Nil
     dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
 
     while (isDustAvailable(aConsts.INNERMOST_PLANET, aConsts.OUTERMOST_PLANET)) {
-      val axis = iStrat.semiMajorAxis(rand, stats.injectedNuclei, dust)
-      val ecc = iStrat.eccentricity(rand)
+      val axis = iStrat.semiMajorAxis(stats.injectedNuclei, dust)
+      val ecc = iStrat.eccentricity
       val proto = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
       stats = stats.injectNuclei
 
@@ -259,7 +254,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
 
       if (proto.mass > aConsts.PROTOPLANET_MASS) {
         logger.log(DEBUG, "Checking for collisions.")
-        planetismals = planetismals.inject(proto, toClose, coalesce).sortWith(_.axis < _.axis)
+        planetismals = planetismals.inject(proto, tooClose, coalesce).sortWith(_.axis < _.axis)
         updateDustLanes(proto)
       } else {
         logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
@@ -287,6 +282,8 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     stats = initStats()
 
     val seed = seedOpt.getOrElse(System.currentTimeMillis())
+
+    given rand: Random = new Random()
     rand.setSeed(seed)
     logger.log(DEBUG, "Setting Star System Seed to {0}", seed)
 
