@@ -1,6 +1,7 @@
 package com.szadowsz.starform.model.accrete
 
 import com.szadowsz.starform.model.SimulationStats
+import com.szadowsz.starform.model.accrete.Lists.inject
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
 
@@ -228,20 +229,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     (p.axis > newcomer.axis && (p.innerGravLimit < newcomer.axis || newcomer.outerGravLimit > p.axis)) ||
       (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis))
   }
-
-  def inject[T](
-                 xs: List[T],
-                 n: T,
-                 compare: (T, T) => Boolean,
-                 merge: (T, T) => T
-               ): List[T] = xs match {
-    case Nil =>
-      List(n)
-    case h :: t =>
-      if (compare(h, n)) merge(h, n) :: t
-      else h :: inject(t, n, compare, merge)
-  }
-
+  
   /**
     * Function to form protoplanets by accretion. Main accretion loop.
     *
@@ -271,7 +259,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
 
       if (proto.mass > aConsts.PROTOPLANET_MASS) {
         logger.log(DEBUG, "Checking for collisions.")
-        planetismals = inject(planetismals, proto, toClose, coalesce).sortWith(_.axis < _.axis)
+        planetismals = planetismals.inject(proto, toClose, coalesce).sortWith(_.axis < _.axis)
         updateDustLanes(proto)
       } else {
         logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
