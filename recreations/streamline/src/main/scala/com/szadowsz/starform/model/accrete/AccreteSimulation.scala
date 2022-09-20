@@ -169,8 +169,10 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     */
   def merge(xs: List[DustBand]): List[DustBand] = {
     xs match {
-      case Nil => Nil
-      case _ :: Nil => xs
+      case Nil =>
+        Nil
+      case _ :: Nil =>
+        xs
       case f :: s :: r if f.canMerge(s) =>
         merge(DustBand(f.innerEdge, s.outerEdge, f.hasDust, f.hasGas) :: r)
       case h :: t =>
@@ -180,7 +182,8 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
 
   def split(ds: List[DustBand], p: ProtoPlanet, retainGas: Boolean): List[DustBand] = {
     ds match {
-      case Nil => Nil
+      case Nil =>
+        Nil
       case h :: t if p.innerLimit > h.outerEdge || p.outerLimit < h.innerEdge =>
         h :: split(t, p, retainGas)
       case h :: t if p.innerLimit > h.innerEdge =>
@@ -214,9 +217,9 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   private def coalesce(existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
     logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
     stats = stats.mergeNuclei
-    val new_mass: Double = existing.mass + newcomer.mass
-    val new_axis: Double = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
-    val new_ecc: Double = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
+    val new_mass = existing.mass + newcomer.mass
+    val new_axis = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
+    val new_ecc = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
     accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
   }
@@ -226,9 +229,17 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       (p.axis <= newcomer.axis && (p.outerGravLimit > newcomer.axis || newcomer.innerGravLimit < p.axis))
   }
 
-  def inject[T](xs: List[T], x: T, compare: (T, T) => Boolean, merge: (T, T) => T): List[T] = xs match {
-    case Nil => List(x)
-    case h :: t => if (compare(h, x)) merge(h, x) :: t else h :: inject(t, x, compare, merge)
+  def inject[T](
+                 xs: List[T],
+                 n: T,
+                 compare: (T, T) => Boolean,
+                 merge: (T, T) => T
+               ): List[T] = xs match {
+    case Nil =>
+      List(n)
+    case h :: t =>
+      if (compare(h, n)) merge(h, n) :: t
+      else h :: inject(t, n, compare, merge)
   }
 
   /**
