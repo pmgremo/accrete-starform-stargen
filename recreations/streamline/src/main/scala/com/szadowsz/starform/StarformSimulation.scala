@@ -86,7 +86,5 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     *
     * @return a new [[StarSystem]] instance.
     */
-  override protected def createSystem(seed: Long, stats: SimulationStats, planets: List[Planet]): StarSystem = {
-    StarSystem(seed, stats, star, planets)
-  }
+  override protected def createSystem(seed: Long, stats: SimulationStats, planets: List[Planet]): StarSystem = StarSystem(seed, stats, star, planets)
 }

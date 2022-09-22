@@ -8,7 +8,7 @@ object Lists {
       case Nil =>
         List(n)
       case h :: t =>
-        if (compare(h, n)) merge(h, n) :: t
+        if compare(h, n) then merge(h, n) :: t
         else h :: t.inject(n, compare, merge)
     }
 

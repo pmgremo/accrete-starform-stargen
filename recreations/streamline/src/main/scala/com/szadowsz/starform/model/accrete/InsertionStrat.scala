@@ -40,7 +40,7 @@ case class InsertionStrat(aConst: AccreteConstants, randomisedCount: Int = Inser
     * @return the semi major axis of a planetismal orbiting a star in AU.
     */
   protected def semiMajorAxis(nucleiCount: Int, innermost: Double, outermost: Double, bands: List[DustBand])(using rand: Random): Double = {
-    if (randomisedCount >= nucleiCount) {
+    if randomisedCount >= nucleiCount then {
       rand.between(innermost, outermost)
     } else {
       val band = bands.filter(db => db.hasDust && db.outerEdge > innermost && db.innerEdge < outermost).random()
@@ -89,7 +89,5 @@ case class InsertionStrat(aConst: AccreteConstants, randomisedCount: Int = Inser
     * @param bands the current state of the accretion disc that the new planetismal will be inserted into.
     * @return the semi-major axis of the newly introduced planetismal.
     */
-  def semiMajorAxis(nucleiCount: Int, bands: List[DustBand])(using rand: Random): Double = {
-    semiMajorAxis(nucleiCount, aConst.INNERMOST_PLANET, aConst.OUTERMOST_PLANET, bands)
-  }
+  def semiMajorAxis(nucleiCount: Int, bands: List[DustBand])(using rand: Random): Double = semiMajorAxis(nucleiCount, aConst.INNERMOST_PLANET, aConst.OUTERMOST_PLANET, bands)
 }

@@ -2,13 +2,15 @@ package com.szadowsz.starform.model.accrete
 
 import com.szadowsz.starform.model.star.StarRequired
 
+import java.lang.Math.*
+
 
 /**
   * Calculations need to model Planetesimal objects.
   *
   * @author Zakski : 21/07/2015.
   */
-case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
+case class PlanetesimalCalc(aConst: AccreteConstants) extends StarRequired {
 
   /**
     * Method to get the Perihelion distance between an orbiting planetary body and its star. The Perihelion distance is the closest that the planetary body will
@@ -18,15 +20,13 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @note equivalent of a - ae in dole's paper.
     * @note unit of return value is AU
     * @note versions that don't use it explicitly, put it as part of their equivilant of [[innerGravLimit]].
-    *
     * @see p. 17, Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method PerihelionDistance, line 37 in DoleParams.java - Ian Burrell (accrete)
     * @see method EvolvePlanet, lines 356 in Dole.c - Andrew Folkins (accretion)
     * @see method EvolvePlanet, lines 432 in dole.c - Keris (accretion v1)
     * @see method EvolvePlanet, line 523 in dole.cc - Keris (accretion v2)
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @return the closest distance between the body and its host star in AU.
     */
   def perihelionDistance(axis: Double, ecc: Double): Double = axis * (1.0 - ecc)
@@ -39,15 +39,13 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @note equivalent of a + ae in dole's paper.
     * @note unit of return value is AU.
     * @note versions that don't use it explicitly, put it as part of their equivilant of [[outerGravLimit]].
-    *
     * @see p. 17, Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method AphelionDistance, line 41 in DoleParams.java - Ian Burrell (accrete)
     * @see method EvolvePlanet, lines 357 in Dole.c - Andrew Folkins (accretion)
     * @see method EvolvePlanet, lines 433 in dole.c - Keris (accretion v1)
     * @see method EvolvePlanet, line 524 in dole.cc - Keris (accretion v2)
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @return the greatest distance between the body and its host star in AU.
     */
   def aphelionDistance(axis: Double, ecc: Double): Double = axis * (1.0 + ecc)
@@ -60,7 +58,6 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     *
     * @note original formula is located in [[PlanetesimalCalc]]
     * @note unit of return value is solar mass.
-    *
     * @see eq (7), p. 503, Extra-solar Planetary Systems: A Microcomputer Simulation - Martyn J. Fogg
     * @see method critical_limit, line 257 in accrete.c - Mat Burdick (accrete)
     * @see method EvolvePlanet, line 359 in Dole.c - Andrew Folkins (accretion)
@@ -69,11 +66,10 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @see method critical_limit, line 283 in accrete.c - Keris (starform)
     * @see method critical_limit, line 256 in accrete.c - Mat Burdick (starform)
     * @see method critical_limit, line 243 in  Star.java - Carl Burke (starform)
-    *
     * @param perihelion closest protoplanet gets to the sun.
     * @return critical mass in solar mass.
     */
-  def criticalMass(perihelion: Double): Double = aConst.B * Math.pow(perihelion * Math.sqrt(star.luminosity), -0.75)
+  def criticalMass(perihelion: Double): Double = aConst.B * pow(perihelion * sqrt(star.luminosity), -0.75)
 
   /**
     * Method is function of mass used in calculation to get the distance at which the protoplanet nuclei will attract particles by gravitation attraction. Used
@@ -81,14 +77,12 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * Simulation".
     *
     * @note equivalent of mu/μ in dole's paper.
-    *
     * @see p. 17, Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see [[innerGravLimit()]] / [[outerGravLimit()]]
-    *
     * @param mass - the mass of the protoplanetary body in solar mass (M?).
     * @return coeffecient applied to perihelion and aphelion distances.
     */
-  def muMassFunction(mass: Double): Double = Math.pow(mass / (1.0 + mass), 0.25)
+  def muMassFunction(mass: Double): Double = pow(mass / (1.0 + mass), 0.25)
 
   /**
     * Method is used to calculate the inner distance at which the protoplanet nuclei will attract particles by gravitation attraction. Formula taken from
@@ -101,28 +95,24 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @note Keris uses it as part of his equivalent of [[innerBandLimit]] in starform.
     * @note Other versions that don't use two separate methods explicitly, use a method called Reach to calculate the gravitational pull separately.
     * @note unit of return value is AU.
-    *
     * @see figure 6, p. 19 , Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method InnerEffectLimit, line 70 in DoleParams.java - Ian Burrell (accrete)
     * @see method Reach, line 129 / method EvolvePlanet, lines 368-370 in Dole.c - Andrew Folkins (accretion)
     * @see method Reach, line 139 / method EvolvePlanet, lines 447-449 in dole.c - Keris (accretion v1)
     * @see method Reach, line 234 / method EvolvePlanet, lines 538-540 in dole.cc - Keris (accretion v2)
-    *
     * @param perihelion the closest distance between the body and its host star in AU.
-    * @param mass the mass of the body in solar mass (M?).
+    * @param mass       the mass of the body in solar mass (M?).
     * @return the (perihelion - gravitational pull) distance in AU.
     */
-  def innerGravLimit(perihelion: Double, mass: Double) : Double = perihelion * (1.0 - muMassFunction(mass))
+  def innerGravLimit(perihelion: Double, mass: Double): Double = perihelion * (1.0 - muMassFunction(mass))
 
   /**
     * Method is used to calculate the outer distance at which the protoplanet nuclei will attract particles by gravitation attraction.
     *
     * @note unit of return value is AU.
-    *
     * @see [[innerGravLimit]] above for more info.
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @param mass the mass of the body in solar mass (M?).
     * @return the greatest distance between the body and its host star in AU.
     */
@@ -139,15 +129,13 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @note Keris uses it as part of his equivalent of [[outerBandLimit]] in starform.
     * @note Other versions that don't use two separate methods explicitly, use a method called Reach to calculate the gravitational pull separately.
     * @note unit of return value is AU.
-    *
     * @see figure 6, p. 19 , Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method OuterEffectLimit, line 74 in DoleParams.java - Ian Burrell (accrete)
     * @see method Reach, line 129 / method EvolvePlanet, lines 368-370 in Dole.c - Andrew Folkins (accretion)
     * @see method Reach, line 139 / method EvolvePlanet, lines 447-449 in dole.c - Keris (accretion v1)
     * @see method Reach, line 234 / method EvolvePlanet, lines 538-540 in dole.cc - Keris (accretion v2)
-    *
     * @param aphelion the furthest distance between the body and its host star in AU.
-    * @param mass the mass of the body in solar mass (M?).
+    * @param mass     the mass of the body in solar mass (M?).
     * @return the aphelion + the gravitational pull distance in AU.
     */
   def outerGravLimit(aphelion: Double, mass: Double): Double = aphelion * (1.0 + muMassFunction(mass))
@@ -157,11 +145,9 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * Method is used to calculate the outer distance at which the protoplanet nuclei will attract particles by gravitation attraction.
     *
     * @note unit of return value is AU.
-    *
     * @see [[outerGravLimit]] above for more info.
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @param mass the mass of the body in solar mass (M?).
     * @return the closest distance between the body and its host star in AU.
     */
@@ -174,7 +160,6 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     *
     * @note equivalent of (rp - xp)/(1.0 + W) in dole's paper.
     * @note unit of return value is AU.
-    *
     * @see pp. 19-20 , Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method InnerSweptLimit, line 78 in DoleParams.java - Ian Burrell (accrete)
     * @see method inner_effect_limit, line 62 in accrete.c - Mat Burdick (accrete)
@@ -184,8 +169,7 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @see method inner_effect_limit, line 85 in accrete.c - Keris (starform)
     * @see method inner_effect_limit, line 62 in accrete.c - Mat Burdick (starform)
     * @see method inner_reduced_limit, line 83 in   Protoplanet.java - Carl Burke (starform)
-    *
-    * @param innerGravLimit  the perihelion - the gravitational pull distance in AU.
+    * @param innerGravLimit the perihelion - the gravitational pull distance in AU.
     * @return The inner bound of the protoplanet's ability to accrete in AU.
     */
   def innerBandLimit(innerGravLimit: Double): Double = innerGravLimit / (1.0 + aConst.CLOUD_ECCENTRICITY)
@@ -195,11 +179,9 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * cloud's eccentricity.
     *
     * @note unit of return value is AU.
-    *
     * @see [[innerBandLimit]] above for more information.
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @param mass the mass of the body in solar mass (M?).
     * @return the greatest distance between the body and its host star in AU.
     */
@@ -213,7 +195,6 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     *
     * @note equivalent of (ra + xa)/(1.0 - W) in dole's paper.
     * @note unit of return value is AU.
-    *
     * @see pp. 19-20 , Formation of Planetary Systems by Aggregation: A Computer Simulation - Stephen H. Dole
     * @see method OuterSweptLimit, line 82 in DoleParams.java - Ian Burrell (accrete)
     * @see method outer_effect_limit, line 69 in accrete.c - Mat Burdick (accrete)
@@ -223,7 +204,6 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * @see method outer_effect_limit, line 91 in accrete.c - Keris (starform)
     * @see method outer_effect_limit, line 68 in accrete.c - Mat Burdick (starform)
     * @see method outer_reduced_limit, line 97 in  Protoplanet.java - Carl Burke (starform)
-    *
     * @param outerGravLimit the aphelion + the gravitational pull distance in AU.
     * @return The outer bound of the protoplanet's ability to accrete
     */
@@ -235,11 +215,9 @@ case class PlanetesimalCalc (aConst: AccreteConstants) extends StarRequired {
     * cloud's eccentricity.
     *
     * @note unit of return value is AU.
-    *
     * @see [[outerBandLimit]] above for more information.
-    *
     * @param axis - the radius of the planetary body's orbit AKA the semi-major axis in AU.
-    * @param ecc - the eccentricity of the planetary body's orbit
+    * @param ecc  - the eccentricity of the planetary body's orbit
     * @param mass the mass of the body in solar mass (M?).
     * @return the closest distance between the body and its host star in AU.
     */

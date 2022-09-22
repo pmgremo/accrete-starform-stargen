@@ -34,9 +34,7 @@ case class DustBand(innerEdge: Double, outerEdge: Double, hasDust: Boolean = tru
     * @param band the band to check against
     * @return true if the two bands are compatible, false otherwise
     */
-  def canMerge(band: DustBand): Boolean = {
-    hasDust == band.hasDust && hasGas == band.hasGas
-  }
+  def canMerge(band: DustBand): Boolean = hasDust == band.hasDust && hasGas == band.hasGas
 
   /**
     * Method to supply String representation of the band.

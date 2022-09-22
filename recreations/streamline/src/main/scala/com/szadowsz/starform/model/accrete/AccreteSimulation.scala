@@ -7,6 +7,7 @@ import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
 
 import java.lang.Math.*
 import java.lang.System.Logger.Level.{DEBUG, INFO}
+import scala.annotation.tailrec
 import scala.util.Random
 
 /**
@@ -43,11 +44,6 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * The statistics recorder for the accretion process.
     */
   protected var stats: SimulationStats = _
-
-  /**
-    * Representation of the dust cloud that the planetismals form from.
-    */
-  protected var dust: List[DustBand] = _
 
   /**
     * Function to initialise a new instance at the beginning of each run.
@@ -96,7 +92,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param outer the outer limit of the range in AU.
     * @return whether or not there is still dust between inner and outer limits in this current accretion process.
     */
-  final protected def isDustAvailable(inner: Double, outer: Double): Boolean = dust.exists(d => d.hasDust && d.outerEdge > inner && d.innerEdge < outer)
+  final protected def isDustAvailable(dust: List[DustBand], inner: Double, outer: Double): Boolean = dust.exists(d => d.hasDust && d.outerEdge > inner && d.innerEdge < outer)
 
 
   /**
@@ -114,15 +110,15 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param bands the current band list.
     * @return the new calculated mass
     */
-  final protected def accreteDust(bands: List[DustBand], proto: ProtoPlanet): Double = {
+  final protected def accrete(bands: List[DustBand], proto: ProtoPlanet): Double = {
     val innerSweep = max(proto.innerLimit, 0.0)
     val outerSweep = proto.outerLimit
 
     bands
       .filter(x => x.outerEdge > innerSweep && x.innerEdge < outerSweep)
       .map(x => {
-        var density = if (x.hasDust) accCalc.dustDensity(proto.axis) else 0.0
-        if (x.hasGas && proto.isGasGiant) density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
+        var density = if x.hasDust then accCalc.dustDensity(proto.axis) else 0.0
+        if x.hasGas && proto.isGasGiant then density = accCalc.dustAndGasDensity(density, proto.criticalMass, proto.mass)
         density * accCalc.bandVolume(proto.mass, proto.axis, proto.ecc, innerSweep, outerSweep, x.innerEdge, x.outerEdge)
       })
       .sum
@@ -141,14 +137,12 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method accrete_dust, line 190 in  DustDisc.java - Carl Burke (starform)
     * @param proto newly coalesced proto-planet
     */
-  final protected def accreteDust(proto: ProtoPlanet): ProtoPlanet = {
-    while ( {
-      val lastMass = proto.mass
-      val nextMass = accreteDust(dust, proto)
-      proto.mass = max(nextMass, lastMass)
-      accCalc.shouldAccreteContinue(lastMass, nextMass)
-    }) ()
-    proto
+  @tailrec
+  final protected def accreteDust(dust: List[DustBand], proto: ProtoPlanet): ProtoPlanet = {
+    val lastMass = proto.mass
+    val nextMass = accrete(dust, proto)
+    proto.mass = max(nextMass, lastMass)
+    if !accCalc.shouldAccreteContinue(lastMass, nextMass) then proto else accreteDust(dust, proto)
   }
 
   /**
@@ -204,20 +198,19 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method update_dust_lanes, line 141 in  DustDisc.java - Carl Burke (starform)
     * @param proto newly coalesced proto-planet
     */
-  final protected def updateDustLanes(proto: ProtoPlanet): Unit = {
+  final protected def updateDustLanes(dust: List[DustBand], proto: ProtoPlanet): List[DustBand] = {
     logger.log(DEBUG, "Updating Dust Lanes")
-    dust = split(dust, proto, !proto.isGasGiant)
-    dust = merge(dust)
+    merge(split(dust, proto, !proto.isGasGiant))
   }
 
-  private def coalesce(existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
+  private def coalesce(dust: List[DustBand], existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
     logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
     stats = stats.mergeNuclei
     val new_mass = existing.mass + newcomer.mass
     val new_axis = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
     val new_ecc = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
-    accreteDust(new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
+    accreteDust(dust, new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
   }
 
   private def tooClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {
@@ -240,22 +233,24 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
   final protected def accrete(using rand: Random): List[ProtoPlanet] = {
     logger.log(DEBUG, "Initialising Statistics Recorder")
     var planetismals: List[ProtoPlanet] = Nil
-    dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
+    var dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
 
-    while (isDustAvailable(aConsts.INNERMOST_PLANET, aConsts.OUTERMOST_PLANET)) {
-      val axis = iStrat.semiMajorAxis(stats.injectedNuclei, dust)
-      val ecc = iStrat.eccentricity
-      val proto = createProtoplanet(aConsts.PROTOPLANET_MASS, axis, ecc)
+    while (isDustAvailable(dust, aConsts.INNERMOST_PLANET, aConsts.OUTERMOST_PLANET)) {
+      val proto = createProtoplanet(
+        aConsts.PROTOPLANET_MASS,
+        iStrat.semiMajorAxis(stats.injectedNuclei, dust),
+        iStrat.eccentricity
+      )
       stats = stats.injectNuclei
 
       logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
 
-      accreteDust(proto)
+      accreteDust(dust, proto)
 
-      if (proto.mass > aConsts.PROTOPLANET_MASS) {
+      if proto.mass > aConsts.PROTOPLANET_MASS then {
         logger.log(DEBUG, "Checking for collisions.")
-        planetismals = planetismals.inject(proto, tooClose, coalesce).sortWith(_.axis < _.axis)
-        updateDustLanes(proto)
+        planetismals = planetismals.inject(proto, tooClose, (x, y) => coalesce(dust, x, y)).sortWith(_.axis < _.axis)
+        dust = updateDustLanes(dust, proto)
       } else {
         logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
       }
@@ -284,6 +279,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     val seed = seedOpt.getOrElse(System.currentTimeMillis())
 
     given rand: Random = new Random()
+
     rand.setSeed(seed)
     logger.log(DEBUG, "Setting Star System Seed to {0}", seed)
 

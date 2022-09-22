@@ -13,3 +13,9 @@ dependencies {
     testImplementation group: 'org.scalatest', name: 'scalatest_3', version: '3.2.13'
     testRuntimeOnly group: 'com.vladsch.flexmark', name: 'flexmark-all', version: '0.64.0'
 }
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.with {
+        targetCompatibility = ''
+    }
+}

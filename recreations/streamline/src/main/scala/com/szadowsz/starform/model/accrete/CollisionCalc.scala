@@ -1,5 +1,7 @@
 package com.szadowsz.starform.model.accrete
 
+import java.lang.Math.*
+
 /**
   * Basic Calculations for Combining to planetesimals into one.
   *
@@ -12,7 +14,7 @@ case class CollisionCalc (pCalc: PlanetesimalCalc){
     *
     * @see [[coalesceEccentricity()]] for more info.
     */
-  protected def eccTerm(axis: Double, ecc: Double, mass: Double): Double = mass * Math.sqrt(axis) * Math.sqrt(1.0 - ecc * ecc)
+  protected def eccTerm(axis: Double, ecc: Double, mass: Double): Double = mass * sqrt(axis) * sqrt(1.0 - ecc * ecc)
 
   /**
     * Method to calculate whether two coalescing planetesimals have collided. Alluded to in  "III. Experimental Simulation section d) Coalescence of Planets"
@@ -42,7 +44,7 @@ case class CollisionCalc (pCalc: PlanetesimalCalc){
     val outer = pCalc.outerGravLimit(axis1, ecc1, mass1) - axis1
     val inner = axis2 - pCalc.innerGravLimit(axis2, ecc2, mass2)
 
-    (Math.abs(dist) <= outer) || (Math.abs(dist) <= inner)
+    (abs(dist) <= outer) || (abs(dist) <= inner)
   }
 
   /**
@@ -95,9 +97,9 @@ case class CollisionCalc (pCalc: PlanetesimalCalc){
   def coalesceEccentricity(mass1: Double, axis1: Double, ecc1: Double, mass2: Double, axis2: Double, ecc2: Double, axis3: Double): Double = {
 
     val term1: Double = eccTerm(axis1, ecc1, mass1) + eccTerm(axis2, ecc2, mass2)
-    val term2: Double = term1 / ((mass1 + mass2) * Math.sqrt(axis3))
+    val term2: Double = term1 / ((mass1 + mass2) * sqrt(axis3))
     val term3: Double = 1.0 - term2 * term2
 
-    Math.sqrt(Math.abs(term3))
+    sqrt(abs(term3))
   }
 }
