@@ -1,5 +1,6 @@
 package com.szadowsz.starform.model.accrete
 
+import com.szadowsz.starform.log.Log
 import com.szadowsz.starform.model.SimulationStats
 import com.szadowsz.starform.model.accrete.Lists.inject
 import com.szadowsz.starform.system.StarSystem
@@ -15,9 +16,7 @@ import scala.util.Random
   * Computer Simulation".
   *
   */
-abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
-
-  protected val logger: System.Logger = System.getLogger(getClass.getName)
+abstract class AccreteSimulation(protected val aConsts: AccreteConstants) extends Log {
 
   /**
     * the placement strategy to use when inserting new planetismals.
@@ -199,12 +198,12 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @param proto newly coalesced proto-planet
     */
   final protected def updateDustLanes(dust: List[DustBand], proto: ProtoPlanet): List[DustBand] = {
-    logger.log(DEBUG, "Updating Dust Lanes")
+    debug("Updating Dust Lanes")
     merge(split(dust, proto, !proto.isGasGiant))
   }
 
   private def coalesce(dust: List[DustBand], existing: ProtoPlanet, newcomer: ProtoPlanet): ProtoPlanet = {
-    logger.log(INFO, "Collision between planetesimals {0} AU and {1} AU", newcomer.axis, existing.axis)
+    info(s"Collision between planetesimals ${newcomer.axis} AU and ${existing.axis} AU")
     stats = stats.mergeNuclei
     val new_mass = existing.mass + newcomer.mass
     val new_axis = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
@@ -231,7 +230,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @see method dist_planetary_masses, line 145 in  Protosystem.java - Carl Burke (starform)
     */
   final protected def accrete(using rand: Random): List[ProtoPlanet] = {
-    logger.log(DEBUG, "Initialising Statistics Recorder")
+    debug("Initialising Statistics Recorder")
     var planetismals: List[ProtoPlanet] = Nil
     var dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
 
@@ -243,16 +242,16 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
       )
       stats = stats.injectNuclei
 
-      logger.log(INFO, "Injecting protoplanet at {0} AU.", proto.axis)
+      info(s"Injecting protoplanet at ${proto.axis} AU.")
 
       accreteDust(dust, proto)
 
       if proto.mass > aConsts.PROTOPLANET_MASS then {
-        logger.log(DEBUG, "Checking for collisions.")
+        debug("Checking for collisions.")
         planetismals = planetismals.inject(proto, tooClose, (x, y) => coalesce(dust, x, y)).sortWith(_.axis < _.axis)
         dust = updateDustLanes(dust, proto)
       } else {
-        logger.log(DEBUG, "Injection of protoplanet at {0} AU failed due to large neighbor.", proto.axis)
+        debug(s"Injection of protoplanet at ${proto.axis} AU failed due to large neighbor.")
       }
     }
     planetismals
@@ -273,7 +272,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     * @return the generated solar system.
     */
   final def generateSystem(seedOpt: Option[Long] = None): StarSystem = {
-    logger.log(DEBUG, "Initialising Statistics Recorder")
+    debug("Initialising Statistics Recorder")
     stats = initStats()
 
     val seed = seedOpt.getOrElse(System.currentTimeMillis())
@@ -281,14 +280,14 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) {
     given rand: Random = new Random()
 
     rand.setSeed(seed)
-    logger.log(DEBUG, "Setting Star System Seed to {0}", seed)
+    debug(s"Setting Star System Seed to $seed")
 
-    logger.log(INFO, "Beginning Protoplanet Generation for {0}", seed)
+    info(s"Beginning Protoplanet Generation for $seed")
 
     val planets = generatePlanets()
     stats = stats.finished
 
-    logger.log(INFO, "Finished Protoplanet Generation for {0} in {1}ms", seed, stats.timeElapsed)
+    info(s"Finished Protoplanet Generation for $seed in ${stats.timeElapsed}ms")
     createSystem(seed, stats, planets)
   }
 }
