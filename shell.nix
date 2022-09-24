@@ -5,7 +5,7 @@ in pkgs.mkShell {
 
   buildInputs = with pkgs; [
     git
-    jdk11_headless
+    jdk17_headless
     gradle
     gcc
     dotty
