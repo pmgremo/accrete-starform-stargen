@@ -425,7 +425,7 @@ abstract class AccreteSimulation[S <: Star, R <: SimulationStats[R], P <: Planet
   final protected def accrete(): Unit = {
     logger.log(DEBUG, "Initialising Statistics Recorder")
     planetismals = Nil
-    dust = List(DustBand(0.0, accCalc.outerDustLimit(1.0))) // TODO outerDustLimit function goes against the spirit of the base sim and needs to be refactored.
+    dust = List(DustBand(0.0, accCalc.outerDustLimit(star.mass)))
 
     while (isDustAvailable(INNERMOST_PLANET, OUTERMOST_PLANET)) {
       val axis = iStrat.semiMajorAxis(rand, stats.injectedNuclei, dust)
