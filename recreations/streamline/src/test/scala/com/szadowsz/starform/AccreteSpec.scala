@@ -2,8 +2,7 @@ package com.szadowsz.starform
 
 import com.szadowsz.starform.model.SimConstants
 import com.szadowsz.starform.model.accrete.PlanetesimalCalc
-import com.szadowsz.starform.model.star.StarCalc
-import com.szadowsz.starform.system.bodies.ProtoPlanet
+import com.szadowsz.starform.system.bodies.{ProtoPlanet, Star}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -14,7 +13,7 @@ class AccreteSpec extends AnyFunSpec with Matchers {
   describe("planets should be predictable") {
     val seed: Long = 0x0000_0018_31D3_B5BCC
     val rand = new Random(seed)
-    val star = new StarCalc().initStar(rand)
+    val star = Star(rand)
     val constants = SimConstants(None, None, None, None, None)
     val pCalc = PlanetesimalCalc(constants)
     pCalc.setStar(star)

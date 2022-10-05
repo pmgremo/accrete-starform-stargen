@@ -2,7 +2,6 @@ package com.szadowsz.starform
 
 import com.szadowsz.starform.model.accrete.{AccreteCalc, AccreteSimulation}
 import com.szadowsz.starform.model.eco.EcoCalc
-import com.szadowsz.starform.model.star.StarCalc
 import com.szadowsz.starform.model.{SimConstants, SimulationStats}
 import com.szadowsz.starform.system.StarSystem
 import com.szadowsz.starform.system.bodies.{Planet, Planetismal, Star}
@@ -24,11 +23,6 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
   protected lazy val eCalc: EcoCalc = new EcoCalc
 
   /**
-    * calculations to work out new protoplanet info after a collision.
-    */
-  protected lazy val sCalc: StarCalc = new StarCalc
-
-  /**
     * the accretion code to use when hoovering up dust.
     */
   protected override lazy val accCalc: AccreteCalc = AccreteCalc(star, pCalc, aConsts)
@@ -48,7 +42,7 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     * @return a new list of [[Planetismal]] instances.
     */
   final protected def generatePlanets()(using rand: Random): List[Planet] = {
-    star = sCalc.initStar(rand)
+    star = Star(rand)
     pCalc.setStar(star)
     accrete.map(proto => buildEcosphere(proto))
   }
