@@ -2,6 +2,8 @@ package com.szadowsz.starform
 
 import com.szadowsz.starform.model.SimConstants
 
+import scala.sys.SystemProperties
+
 /**
   * A Modification of DoleAccretionTestCase. Simple Application to generate and print off planets to the logs.
   *
@@ -9,7 +11,7 @@ import com.szadowsz.starform.model.SimConstants
   */
 object StarformApp {
 
-  System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %3$s %5$s%6$s%n")
+  sys.props.put("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %3$s %5$s%6$s%n")
 
   def main(args: Array[String]): Unit = {
     val starform = new StarformSimulation(SimConstants(None, None, None, None, None))
