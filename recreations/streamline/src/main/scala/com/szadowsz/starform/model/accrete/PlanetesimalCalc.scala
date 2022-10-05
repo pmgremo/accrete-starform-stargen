@@ -1,6 +1,6 @@
 package com.szadowsz.starform.model.accrete
 
-import com.szadowsz.starform.model.star.StarRequired
+import com.szadowsz.starform.system.bodies.Star
 
 import java.lang.Math.*
 
@@ -10,7 +10,7 @@ import java.lang.Math.*
   *
   * @author Zakski : 21/07/2015.
   */
-case class PlanetesimalCalc(aConst: AccreteConstants) extends StarRequired {
+case class PlanetesimalCalc(aConst: AccreteConstants) {
 
   /**
     * Method to get the Perihelion distance between an orbiting planetary body and its star. The Perihelion distance is the closest that the planetary body will
@@ -69,7 +69,7 @@ case class PlanetesimalCalc(aConst: AccreteConstants) extends StarRequired {
     * @param perihelion closest protoplanet gets to the sun.
     * @return critical mass in solar mass.
     */
-  def criticalMass(perihelion: Double): Double = aConst.B * pow(perihelion * sqrt(star.luminosity), -0.75)
+  def criticalMass(star: Star, perihelion: Double): Double = aConst.B * pow(perihelion * sqrt(star.luminosity), -0.75)
 
   /**
     * Method is function of mass used in calculation to get the distance at which the protoplanet nuclei will attract particles by gravitation attraction. Used

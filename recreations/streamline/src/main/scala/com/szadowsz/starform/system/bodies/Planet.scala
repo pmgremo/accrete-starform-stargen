@@ -24,7 +24,7 @@ class Planet(
               val minTemp: Double,
               val maxTemp: Double
             )
-  extends Planetismal with UWPCalc {
+  extends Planetismal(proto.star) with UWPCalc {
 
   /**
     * The mass of the body.

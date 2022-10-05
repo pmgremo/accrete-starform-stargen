@@ -4,7 +4,7 @@ import com.szadowsz.starform.log.Log
 import com.szadowsz.starform.model.SimulationStats
 import com.szadowsz.starform.model.accrete.Lists.inject
 import com.szadowsz.starform.system.StarSystem
-import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet}
+import com.szadowsz.starform.system.bodies.{DustBand, Planet, ProtoPlanet, Star}
 
 import java.lang.Math.*
 import java.lang.System.Logger.Level.{DEBUG, INFO}
@@ -17,6 +17,7 @@ import scala.util.Random
   *
   */
 abstract class AccreteSimulation(protected val aConsts: AccreteConstants) extends Log {
+  protected var star: Star = _
 
   /**
     * the placement strategy to use when inserting new planetismals.
@@ -74,7 +75,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) extend
     * @param ecc  eccentrisity on a scale of 0 to 1
     * @return a freshly made proto-planet.
     */
-  final protected def createProtoplanet(mass: Double, axis: Double, ecc: Double): ProtoPlanet = new ProtoPlanet(pCalc, mass, axis, ecc)
+  final protected def createProtoplanet(mass: Double, axis: Double, ecc: Double): ProtoPlanet = new ProtoPlanet(star, pCalc, mass, axis, ecc)
 
   /**
     * Steps through list of dust bands checking to see if any of those that bands that overlap the given range have dust present.
@@ -209,7 +210,7 @@ abstract class AccreteSimulation(protected val aConsts: AccreteConstants) extend
     val new_axis = colCalc.coalesceAxis(existing.mass, existing.axis, newcomer.mass, newcomer.axis)
     val new_ecc = colCalc.coalesceEccentricity(existing.mass, existing.axis, existing.ecc, newcomer.mass, newcomer.axis, newcomer.ecc, new_axis)
 
-    accreteDust(dust, new ProtoPlanet(pCalc, new_mass, new_axis, new_ecc))
+    accreteDust(dust, new ProtoPlanet(star, pCalc, new_mass, new_axis, new_ecc))
   }
 
   private def tooClose(p: ProtoPlanet, newcomer: ProtoPlanet) = {

@@ -16,8 +16,7 @@ import scala.collection.mutable
   * @see Protoplanet.java - Carl Burke (starform)
   * @author Zakski : 25/06/2015.
   */
-trait Planetismal {
-
+trait Planetismal(val star: Star) {
   /**
     * The mass of the body.
     *

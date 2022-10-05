@@ -15,8 +15,6 @@ import scala.util.Random
   */
 class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profile) {
 
-  protected var star: Star = _
-
   /**
     * calculations innately tied to the protoplanets
     */
@@ -43,7 +41,6 @@ class StarformSimulation(profile: SimConstants) extends AccreteSimulation(profil
     */
   final protected def generatePlanets()(using rand: Random): List[Planet] = {
     star = Star(rand)
-    pCalc.setStar(star)
     accrete.map(proto => buildEcosphere(proto))
   }
 
